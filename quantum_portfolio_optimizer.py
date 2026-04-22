@@ -150,10 +150,15 @@ def build_qubo(edges: np.ndarray,
     for i in range(n):
         Q[i, i] -= edges[i]
 
-    # ── 2. Risk: covariance penalty (upper triangle, symmetric) ──
+    # ── 2. Risk: covariance penalty ──
+    # Add individual asset variance to the diagonal
+    for i in range(n):
+        Q[i, i] += beta * cov[i, i]
+        
+    # Add cross-covariance to the off-diagonal (multiplied by 2 since Q is upper triangular)
     for i in range(n):
         for j in range(i + 1, n):
-            Q[i, j] += beta * cov[i, j]
+            Q[i, j] += 2 * beta * cov[i, j]
 
     # ── 3. Budget constraint:  γ (Σ x_i - K)²  ──
     #    Expand:  γ [ Σ x_i² + 2 Σ_{i<j} x_i x_j - 2K Σ x_i + K² ]
