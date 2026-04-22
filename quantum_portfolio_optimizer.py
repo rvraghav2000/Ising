@@ -78,14 +78,20 @@ def compute_model_probabilities(df: pd.DataFrame) -> pd.DataFrame:
 def build_covariance_matrix(df: pd.DataFrame) -> np.ndarray:
     """
     Heuristic Covariance Matrix:
-      - Same category  → ρ = 0.8
-      - Cross category → ρ = 0.1
-    Diagonal entries are set to the variance of each contract's Bernoulli payoff:
-      σ²_i = p_i * (1 - p_i)
+      - Same category  → ρ = 0.8 (Highly correlated)
+      - Cross category → ρ = 0.1 (Loosely correlated)
+      - MUTUALLY EXCLUSIVE → True negative covariance: Cov(A,B) = -P(A)P(B)
     """
     n = len(df)
     categories = df["category"].values
     prices     = df["price"].values
+    tickers    = df["ticker"].values
+
+    # Explicitly identify pairs that cannot physically happen at the same time
+    mutually_exclusive = [
+        {"SP500-GT-5200", "SP500-LT-5100"},
+        {"FED-HIKE-50BPS", "FED-CUT-25BPS"}
+    ]
 
     sigma = np.zeros((n, n))
     for i in range(n):
@@ -93,9 +99,14 @@ def build_covariance_matrix(df: pd.DataFrame) -> np.ndarray:
             if i == j:
                 sigma[i, j] = prices[i] * (1 - prices[i])       # Bernoulli variance
             else:
-                rho = 0.8 if categories[i] == categories[j] else 0.1
-                sigma[i, j] = rho * np.sqrt(prices[i] * (1 - prices[i]) *
-                                             prices[j] * (1 - prices[j]))
+                pair_set = {tickers[i], tickers[j]}
+                if pair_set in mutually_exclusive:
+                    # P(A and B) = 0. Therefore, Cov(A,B) = E[AB] - E[A]E[B] = 0 - P(A)P(B)
+                    sigma[i, j] = - (prices[i] * prices[j])
+                else:
+                    rho = 0.8 if categories[i] == categories[j] else 0.1
+                    sigma[i, j] = rho * np.sqrt(prices[i] * (1 - prices[i]) *
+                                                 prices[j] * (1 - prices[j]))
     return sigma
 
 
