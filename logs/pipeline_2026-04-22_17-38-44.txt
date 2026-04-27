@@ -1,0 +1,243 @@
+Pipeline run started: 2026-04-22 17:38:44
+Log file            : logs\pipeline_2026-04-22_17-38-44.txt
+============================================================================================================
+
+STAGE 1 / 2  —  Quantum Portfolio Optimizer
+============================================================================================================
+
+🚀  Initializing Quantum Portfolio Optimizer …
+
+  [1/5]  Fetching Kalshi contract data …
+         → 12 contracts loaded across 4 categories.
+
+  [2/5]  Constructing heuristic covariance matrix …
+         → Σ shape: (12, 12)   |  max off-diag: 0.1898
+
+  [3/5]  Building QUBO matrix …
+         → Exclusivity pairs: 3
+           ⊘  SP500-GT-5200  ↔  SP500-LT-5100
+           ⊘  FED-HIKE-50BPS  ↔  FED-CUT-25BPS
+           ⊘  CPI-YOY-GT-3.5  ↔  CPI-YOY-GT-4.0
+         → Q shape: (12, 12)   |  Q range: [-10.0102, 9.1240]
+
+  [4/5]  Converting QUBO → Ising Hamiltonian …
+         → h terms: 12   |   J terms: 66   |   offset: 10.8678
+         Solving via dwave-neal Simulated Annealing (5000 reads) …
+         → Solution found.  QUBO Energy: -17.8726
+
+  [5/5]  Validating solution …
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+  ⚛  QUANTUM PORTFOLIO OPTIMIZER  —  Kalshi Binary Event Contracts
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+#    Ticker                 Contract Name                         Price   Model P      Edge   Select
+────────────────────────────────────────────────────────────────────────────────────────────────────
+0    FED-HIKE-25BPS         Fed Hikes ≥25bps in June               0.62    0.6075   -0.0125        ·
+1    FED-HIKE-50BPS         Fed Hikes ≥50bps in June               0.18    0.2251   +0.0451        ✔
+2    FED-CUT-25BPS          Fed Cuts ≥25bps in June                0.15    0.1732   +0.0232        ·
+3    CPI-YOY-GT-3.5         CPI YoY > 3.5% in May                  0.35    0.3599   +0.0099        ·
+4    CPI-YOY-GT-4.0         CPI YoY > 4.0% in May                  0.12    0.0856   -0.0344        ·
+5    CPI-MOM-GT-0.3         CPI MoM > 0.3% in May                  0.45    0.4156   -0.0344        ·
+6    SP500-GT-5200          S&P 500 > 5200 on Jun 30               0.55    0.5058   -0.0442        ·
+7    SP500-GT-5400          S&P 500 > 5400 on Jun 30               0.30    0.3366   +0.0366        ✔
+8    SP500-LT-5100          S&P 500 < 5100 on Jun 30               0.22    0.2301   +0.0101        ·
+9    NYC-RAIN-JUN           Rain in NYC on Jun 1                   0.40    0.4208   +0.0208        ·
+10   TEMP-NYC-GT-90F        NYC Temp > 90°F in June                0.28    0.2321   -0.0479        ·
+11   HRCN-ATL-JUN           Atlantic Hurricane in June             0.08    0.1270   +0.0470        ✔
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  📊  Selected Contracts : 3 / 3  ✅ Budget OK
+  💰  Total Expected Edge: +0.1287
+  ⚡  QUBO Energy        : -17.8726
+
+  🔒  Exclusivity Check  : ✅  No violations detected.
+
+  📋  SELECTED PORTFOLIO:
+────────────────────────────────────────────────────────────────────────────────────────────────────
+      • [FED-HIKE-50BPS]  Fed Hikes ≥50bps in June
+        Market Price: 0.18  |  Model P: 0.2251  |  Edge: +0.0451
+      • [SP500-GT-5400]  S&P 500 > 5400 on Jun 30
+        Market Price: 0.30  |  Model P: 0.3366  |  Edge: +0.0366
+      • [HRCN-ATL-JUN]  Atlantic Hurricane in June
+        Market Price: 0.08  |  Model P: 0.1270  |  Edge: +0.0470
+
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+STAGE 2 / 2  —  Sensitivity Analysis
+============================================================================================================
+
+  Quantum Portfolio Sensitivity Analyzer
+
+
+============================================================================================================
+  ALL AVAILABLE CONTRACTS  (the full universe of picks)
+============================================================================================================
+#    Cat     Ticker                 Contract Name                          Price   Model P      Edge  Exclusive With
+------------------------------------------------------------------------------------------------------------
+0    [FED] FED-HIKE-25BPS         Fed Hikes ≥25bps in June                0.62    0.6532   +0.0332  none
+1    [FED] FED-HIKE-50BPS         Fed Hikes ≥50bps in June                0.18    0.1512   -0.0288  FED-CUT-25BPS
+2    [FED] FED-CUT-25BPS          Fed Cuts ≥25bps in June                 0.15    0.1182   -0.0318  FED-HIKE-50BPS
+3    [CPI] CPI-YOY-GT-3.5         CPI YoY > 3.5% in May                   0.35    0.3183   -0.0317  CPI-YOY-GT-4.0
+4    [CPI] CPI-YOY-GT-4.0         CPI YoY > 4.0% in May                   0.12    0.1004   -0.0196  CPI-YOY-GT-3.5
+5    [CPI] CPI-MOM-GT-0.3         CPI MoM > 0.3% in May                   0.45    0.4525   +0.0025  none
+6    [SPX] SP500-GT-5200          S&P 500 > 5200 on Jun 30                0.55    0.5432   -0.0068  SP500-LT-5100
+7    [SPX] SP500-GT-5400          S&P 500 > 5400 on Jun 30                0.30    0.2791   -0.0209  none
+8    [SPX] SP500-LT-5100          S&P 500 < 5100 on Jun 30                0.22    0.2312   +0.0112  SP500-GT-5200
+9    [WX]  NYC-RAIN-JUN           Rain in NYC on Jun 1                    0.40    0.3639   -0.0361  none
+10   [WX]  TEMP-NYC-GT-90F        NYC Temp > 90°F in June                 0.28    0.2592   -0.0208  none
+11   [WX]  HRCN-ATL-JUN           Atlantic Hurricane in June              0.08    0.0666   -0.0134  none
+------------------------------------------------------------------------------------------------------------
+  Total contracts: 12  |  Categories: Fed Rates, Inflation, S&P 500, Weather
+  Exclusivity rules: 3 pair(s) identified
+============================================================================================================
+
+============================================================================================================
+  BETA SWEEP  --  How portfolio changes with risk aversion
+============================================================================================================
+
+  Beta = 0.0  (no risk penalty — pure edge maximiser)
+------------------------------------------------------------------------------------------------------------
+#    Ticker                 Category       Price   Model P      Edge  Status
+------------------------------------------------------------------------------------------------------------
+0    FED-HIKE-25BPS         Fed Rates       0.62    0.6532   +0.0332  >>  PICKED  <<
+1    FED-HIKE-50BPS         Fed Rates       0.18    0.1512   -0.0288      skipped
+2    FED-CUT-25BPS          Fed Rates       0.15    0.1182   -0.0318      skipped
+3    CPI-YOY-GT-3.5         Inflation       0.35    0.3183   -0.0317      skipped
+4    CPI-YOY-GT-4.0         Inflation       0.12    0.1004   -0.0196      skipped
+5    CPI-MOM-GT-0.3         Inflation       0.45    0.4525   +0.0025  >>  PICKED  <<
+6    SP500-GT-5200          S&P 500         0.55    0.5432   -0.0068      skipped
+7    SP500-GT-5400          S&P 500         0.30    0.2791   -0.0209      skipped
+8    SP500-LT-5100          S&P 500         0.22    0.2312   +0.0112  >>  PICKED  <<
+9    NYC-RAIN-JUN           Weather         0.40    0.3639   -0.0361      skipped
+10   TEMP-NYC-GT-90F        Weather         0.28    0.2592   -0.0208      skipped
+11   HRCN-ATL-JUN           Weather         0.08    0.0666   -0.0134      skipped
+------------------------------------------------------------------------------------------------------------
+  Total Edge : +0.0469   |   QUBO Energy: -18.0469
+  Portfolio  : Fed Hikes ≥25bps in June | CPI MoM > 0.3% in May | S&P 500 < 5100 on Jun 30
+
+
+  Beta = 0.4  
+------------------------------------------------------------------------------------------------------------
+#    Ticker                 Category       Price   Model P      Edge  Status
+------------------------------------------------------------------------------------------------------------
+0    FED-HIKE-25BPS         Fed Rates       0.62    0.6532   +0.0332      skipped
+1    FED-HIKE-50BPS         Fed Rates       0.18    0.1512   -0.0288      skipped
+2    FED-CUT-25BPS          Fed Rates       0.15    0.1182   -0.0318      skipped
+3    CPI-YOY-GT-3.5         Inflation       0.35    0.3183   -0.0317      skipped
+4    CPI-YOY-GT-4.0         Inflation       0.12    0.1004   -0.0196  >>  PICKED  <<
+5    CPI-MOM-GT-0.3         Inflation       0.45    0.4525   +0.0025      skipped
+6    SP500-GT-5200          S&P 500         0.55    0.5432   -0.0068      skipped
+7    SP500-GT-5400          S&P 500         0.30    0.2791   -0.0209      skipped
+8    SP500-LT-5100          S&P 500         0.22    0.2312   +0.0112  >>  PICKED  <<
+9    NYC-RAIN-JUN           Weather         0.40    0.3639   -0.0361      skipped
+10   TEMP-NYC-GT-90F        Weather         0.28    0.2592   -0.0208      skipped
+11   HRCN-ATL-JUN           Weather         0.08    0.0666   -0.0134  >>  PICKED  <<
+------------------------------------------------------------------------------------------------------------
+  Total Edge : -0.0218   |   QUBO Energy: -17.8111
+  Portfolio  : CPI YoY > 4.0% in May | S&P 500 < 5100 on Jun 30 | Atlantic Hurricane in June
+
+
+  Beta = 0.8  
+------------------------------------------------------------------------------------------------------------
+#    Ticker                 Category       Price   Model P      Edge  Status
+------------------------------------------------------------------------------------------------------------
+0    FED-HIKE-25BPS         Fed Rates       0.62    0.6532   +0.0332      skipped
+1    FED-HIKE-50BPS         Fed Rates       0.18    0.1512   -0.0288      skipped
+2    FED-CUT-25BPS          Fed Rates       0.15    0.1182   -0.0318      skipped
+3    CPI-YOY-GT-3.5         Inflation       0.35    0.3183   -0.0317      skipped
+4    CPI-YOY-GT-4.0         Inflation       0.12    0.1004   -0.0196  >>  PICKED  <<
+5    CPI-MOM-GT-0.3         Inflation       0.45    0.4525   +0.0025      skipped
+6    SP500-GT-5200          S&P 500         0.55    0.5432   -0.0068      skipped
+7    SP500-GT-5400          S&P 500         0.30    0.2791   -0.0209      skipped
+8    SP500-LT-5100          S&P 500         0.22    0.2312   +0.0112  >>  PICKED  <<
+9    NYC-RAIN-JUN           Weather         0.40    0.3639   -0.0361      skipped
+10   TEMP-NYC-GT-90F        Weather         0.28    0.2592   -0.0208      skipped
+11   HRCN-ATL-JUN           Weather         0.08    0.0666   -0.0134  >>  PICKED  <<
+------------------------------------------------------------------------------------------------------------
+  Total Edge : -0.0218   |   QUBO Energy: -17.6440
+  Portfolio  : CPI YoY > 4.0% in May | S&P 500 < 5100 on Jun 30 | Atlantic Hurricane in June
+
+
+  Beta = 1.2  
+------------------------------------------------------------------------------------------------------------
+#    Ticker                 Category       Price   Model P      Edge  Status
+------------------------------------------------------------------------------------------------------------
+0    FED-HIKE-25BPS         Fed Rates       0.62    0.6532   +0.0332      skipped
+1    FED-HIKE-50BPS         Fed Rates       0.18    0.1512   -0.0288      skipped
+2    FED-CUT-25BPS          Fed Rates       0.15    0.1182   -0.0318  >>  PICKED  <<
+3    CPI-YOY-GT-3.5         Inflation       0.35    0.3183   -0.0317      skipped
+4    CPI-YOY-GT-4.0         Inflation       0.12    0.1004   -0.0196  >>  PICKED  <<
+5    CPI-MOM-GT-0.3         Inflation       0.45    0.4525   +0.0025      skipped
+6    SP500-GT-5200          S&P 500         0.55    0.5432   -0.0068      skipped
+7    SP500-GT-5400          S&P 500         0.30    0.2791   -0.0209      skipped
+8    SP500-LT-5100          S&P 500         0.22    0.2312   +0.0112      skipped
+9    NYC-RAIN-JUN           Weather         0.40    0.3639   -0.0361      skipped
+10   TEMP-NYC-GT-90F        Weather         0.28    0.2592   -0.0208      skipped
+11   HRCN-ATL-JUN           Weather         0.08    0.0666   -0.0134  >>  PICKED  <<
+------------------------------------------------------------------------------------------------------------
+  Total Edge : -0.0648   |   QUBO Energy: -17.4949
+  Portfolio  : Fed Cuts ≥25bps in June | CPI YoY > 4.0% in May | Atlantic Hurricane in June
+
+
+  Beta = 1.6  
+------------------------------------------------------------------------------------------------------------
+#    Ticker                 Category       Price   Model P      Edge  Status
+------------------------------------------------------------------------------------------------------------
+0    FED-HIKE-25BPS         Fed Rates       0.62    0.6532   +0.0332      skipped
+1    FED-HIKE-50BPS         Fed Rates       0.18    0.1512   -0.0288      skipped
+2    FED-CUT-25BPS          Fed Rates       0.15    0.1182   -0.0318  >>  PICKED  <<
+3    CPI-YOY-GT-3.5         Inflation       0.35    0.3183   -0.0317      skipped
+4    CPI-YOY-GT-4.0         Inflation       0.12    0.1004   -0.0196  >>  PICKED  <<
+5    CPI-MOM-GT-0.3         Inflation       0.45    0.4525   +0.0025      skipped
+6    SP500-GT-5200          S&P 500         0.55    0.5432   -0.0068      skipped
+7    SP500-GT-5400          S&P 500         0.30    0.2791   -0.0209      skipped
+8    SP500-LT-5100          S&P 500         0.22    0.2312   +0.0112      skipped
+9    NYC-RAIN-JUN           Weather         0.40    0.3639   -0.0361      skipped
+10   TEMP-NYC-GT-90F        Weather         0.28    0.2592   -0.0208      skipped
+11   HRCN-ATL-JUN           Weather         0.08    0.0666   -0.0134  >>  PICKED  <<
+------------------------------------------------------------------------------------------------------------
+  Total Edge : -0.0648   |   QUBO Energy: -17.3482
+  Portfolio  : Fed Cuts ≥25bps in June | CPI YoY > 4.0% in May | Atlantic Hurricane in June
+
+
+  Beta = 2.0  (maximum risk aversion)
+------------------------------------------------------------------------------------------------------------
+#    Ticker                 Category       Price   Model P      Edge  Status
+------------------------------------------------------------------------------------------------------------
+0    FED-HIKE-25BPS         Fed Rates       0.62    0.6532   +0.0332      skipped
+1    FED-HIKE-50BPS         Fed Rates       0.18    0.1512   -0.0288      skipped
+2    FED-CUT-25BPS          Fed Rates       0.15    0.1182   -0.0318  >>  PICKED  <<
+3    CPI-YOY-GT-3.5         Inflation       0.35    0.3183   -0.0317      skipped
+4    CPI-YOY-GT-4.0         Inflation       0.12    0.1004   -0.0196  >>  PICKED  <<
+5    CPI-MOM-GT-0.3         Inflation       0.45    0.4525   +0.0025      skipped
+6    SP500-GT-5200          S&P 500         0.55    0.5432   -0.0068      skipped
+7    SP500-GT-5400          S&P 500         0.30    0.2791   -0.0209      skipped
+8    SP500-LT-5100          S&P 500         0.22    0.2312   +0.0112      skipped
+9    NYC-RAIN-JUN           Weather         0.40    0.3639   -0.0361      skipped
+10   TEMP-NYC-GT-90F        Weather         0.28    0.2592   -0.0208      skipped
+11   HRCN-ATL-JUN           Weather         0.08    0.0666   -0.0134  >>  PICKED  <<
+------------------------------------------------------------------------------------------------------------
+  Total Edge : -0.0648   |   QUBO Energy: -17.2014
+  Portfolio  : Fed Cuts ≥25bps in June | CPI YoY > 4.0% in May | Atlantic Hurricane in June
+
+============================================================================================================
+  SWEEP SUMMARY
+------------------------------------------------------------------------------------------------------------
+ beta  total_edge  num_selected                                       tickers
+  0.0    0.046905             3 FED-HIKE-25BPS, CPI-MOM-GT-0.3, SP500-LT-5100
+  0.4   -0.021754             3   CPI-YOY-GT-4.0, SP500-LT-5100, HRCN-ATL-JUN
+  0.8   -0.021754             3   CPI-YOY-GT-4.0, SP500-LT-5100, HRCN-ATL-JUN
+  1.2   -0.064757             3   FED-CUT-25BPS, CPI-YOY-GT-4.0, HRCN-ATL-JUN
+  1.6   -0.064757             3   FED-CUT-25BPS, CPI-YOY-GT-4.0, HRCN-ATL-JUN
+  2.0   -0.064757             3   FED-CUT-25BPS, CPI-YOY-GT-4.0, HRCN-ATL-JUN
+------------------------------------------------------------------------------------------------------------
+
+  Results saved to sensitivity_results.csv
+============================================================================================================
+
+
+============================================================================================================
+Pipeline complete. Log saved to: logs\pipeline_2026-04-22_17-38-44.txt
+============================================================================================================

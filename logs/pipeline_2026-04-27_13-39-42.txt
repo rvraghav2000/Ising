@@ -1,0 +1,47 @@
+﻿
+Initializing optimizer...
+
+[1/5] Fetching data...
+Loaded 12 contracts.
+
+[2/5] Constructing covariance matrix...
+Matrix shape: (12, 12)
+
+[3/5] Building QUBO matrix...
+Q shape: (12, 12)
+
+[4/5] Converting QUBO to Ising...
+Solving via dwave-neal...
+Solution found. Energy: -17.8726
+
+[5/5] Validating solution...
+
+--- QUANTUM PORTFOLIO OPTIMIZER ---
+#    Ticker                 Contract Name                         Price   Model P      Edge   Select
+0    FED-HIKE-25BPS         Fed Hikes >= 25bps in June             0.62    0.6075   -0.0125        N
+1    FED-HIKE-50BPS         Fed Hikes >= 50bps in June             0.18    0.2251   +0.0451        Y
+2    FED-CUT-25BPS          Fed Cuts >= 25bps in June              0.15    0.1732   +0.0232        N
+3    CPI-YOY-GT-3.5         CPI YoY > 3.5% in May                  0.35    0.3599   +0.0099        N
+4    CPI-YOY-GT-4.0         CPI YoY > 4.0% in May                  0.12    0.0856   -0.0344        N
+5    CPI-MOM-GT-0.3         CPI MoM > 0.3% in May                  0.45    0.4156   -0.0344        N
+6    SP500-GT-5200          S&P 500 > 5200 on Jun 30               0.55    0.5058   -0.0442        N
+7    SP500-GT-5400          S&P 500 > 5400 on Jun 30               0.30    0.3366   +0.0366        Y
+8    SP500-LT-5100          S&P 500 < 5100 on Jun 30               0.22    0.2301   +0.0101        N
+9    NYC-RAIN-JUN           Rain in NYC on Jun 1                   0.40    0.4208   +0.0208        N
+10   TEMP-NYC-GT-90F        NYC Temp > 90F in June                 0.28    0.2321   -0.0479        N
+11   HRCN-ATL-JUN           Atlantic Hurricane in June             0.08    0.1270   +0.0470        Y
+
+Selected Contracts: 3 / 3 (Budget OK)
+Total Expected Edge: +0.1287
+QUBO Energy: -17.8726
+
+Exclusivity Check: No violations detected.
+
+SELECTED PORTFOLIO:
+  [FED-HIKE-50BPS]  Fed Hikes >= 50bps in June
+  Market Price: 0.18 | Model P: 0.2251 | Edge: +0.0451
+  [SP500-GT-5400]  S&P 500 > 5400 on Jun 30
+  Market Price: 0.30 | Model P: 0.3366 | Edge: +0.0366
+  [HRCN-ATL-JUN]  Atlantic Hurricane in June
+  Market Price: 0.08 | Model P: 0.1270 | Edge: +0.0470
+
