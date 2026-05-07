@@ -1,0 +1,13 @@
+ticker,name,category,event_ticker,price,volume,status,model_prob,edge
+KXCPI-26MAY-T0.6,Will CPI rise more than 0.6% in May 2026?,Inflation (CPI),KXCPI-26MAY,0.2,11293.49,active,0.17992641901557802,-0.020073580984421996
+KXCPI-26MAY-T0.4,Will CPI rise more than 0.4% in May 2026?,Inflation (CPI),KXCPI-26MAY,0.61,8166.01,active,0.6821142890255866,0.07211428902558659
+KXCPI-26MAY-T-0.2,Will CPI rise more than -0.2% in May 2026?,Inflation (CPI),KXCPI-26MAY,0.99,1751.0,active,0.99,0.0
+KXGDP-26JUL30-T2.5,Will **real GDP** increase by more than 2.5% in Q2 2026?,GDP Growth,KXGDP-26JUL30,0.35,9710.12,active,0.36578535747152585,0.015785357471525874
+KXGDP-26JUL30-T1.0,Will **real GDP** increase by more than 1.0% in Q2 2026?,GDP Growth,KXGDP-26JUL30,0.81,13320.28,active,0.7549629824707899,-0.0550370175292102
+KXHIGHNY-26MAY08-T71,"Will the **high temp in NYC** be >71° on May 8, 2026?",Weather (NYC),KXHIGHNY-26MAY08,0.01,1703.13,active,0.01,0.0
+KXHIGHNY-26MAY08-T64,"Will the **high temp in NYC** be <64° on May 8, 2026?",Weather (NYC),KXHIGHNY-26MAY08,0.37,2681.39,active,0.2992933779469119,-0.07070662205308809
+KXHIGHNY-26MAY08-B64.5,"Will the **high temp in NYC** be 64-65° on May 8, 2026?",Weather (NYC),KXHIGHNY-26MAY08,0.43,2978.14,active,0.4885881833239896,0.05858818332398963
+KXUSPPIYOY-26MAY13-T5.2,Will the United States Producer Price Index for final demand for April 2026 be above 5.2%?,Producer Prices (PPI),KXUSPPIYOY-26MAY13,0.01,2030.0,active,0.02617840187891341,0.01617840187891341
+KXUSPPIYOY-26MAY13-T4.6,Will the United States Producer Price Index for final demand for April 2026 be above 4.6%?,Producer Prices (PPI),KXUSPPIYOY-26MAY13,0.48,818.0,active,0.5132916124473672,0.033291612447367225
+KXUSPPIYOY-26MAY13-T4.2,Will the United States Producer Price Index for final demand for April 2026 be above 4.2%?,Producer Prices (PPI),KXUSPPIYOY-26MAY13,0.56,1004.01,active,0.4832935190873284,-0.07670648091267163
+KXCPI-26MAY-T-0.3,Will CPI rise more than -0.3% in May 2026?,Inflation (CPI),KXCPI-26MAY,0.99,1256.0,active,0.99,0.0
