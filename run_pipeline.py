@@ -1,16 +1,10 @@
-#!/usr/bin/env python3
-"""
-run_pipeline.py
-===============
-Master runner: executes both the Quantum Portfolio Optimizer and the
-Sensitivity Analysis, saving all terminal output to a timestamped log file.
-"""
+# run_pipeline.py - runs everything and saves output to a log file
 
 import sys
 import os
 from datetime import datetime
 
-# ── Tee: write to both terminal and a log file simultaneously ──
+# writes to terminal and log file at the same time
 class Tee:
     def __init__(self, file):
         self._file    = file
@@ -58,7 +52,7 @@ def main():
 
     # Restore stdout after the 'with' block closes the file
     sys.stdout = sys.__stdout__
-    print(f"\n✅  Full output saved to: {log_path}\n")
+    print(f"\ndone, output saved to: {log_path}\n")
 
 
 if __name__ == "__main__":

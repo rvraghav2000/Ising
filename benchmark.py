@@ -1,17 +1,4 @@
-#!/usr/bin/env python3
-"""
-benchmark.py
-============
-Benchmarking suite for the Quantum Portfolio Optimizer paper.
-
-Supports two data modes:
-  --real     Use live Kalshi prediction market data (12 real contracts)
-  (default)  Use synthetic contracts for reproducible testing
-
-Part A  – Exclusivity Constraint Ablation
-Part B  – Classical Solver Benchmarking (SA vs Brute-Force vs SciPy vs PuLP+CBC)
-Part C  – SA Robustness Test
-"""
+# benchmark.py - runs ablation, solver comparison, and robustness tests
 
 import sys
 import time
@@ -45,7 +32,7 @@ def evaluate_portfolio(
     exclusivity_pairs: List[Tuple[int, int]],
     beta: float = BETA,
 ) -> dict:
-    """Compute key portfolio metrics from a binary solution dict."""
+    """compute metrics for a given portfolio"""
     selected = [i for i, v in solution.items() if v == 1]
     n_sel = len(selected)
 
@@ -174,7 +161,7 @@ def brute_force_solve(Q: np.ndarray, n: int) -> Tuple[dict, float]:
 
 
 def scipy_relaxed_solve(Q: np.ndarray, n: int) -> Tuple[dict, float]:
-    """Relax x_i in [0,1], run L-BFGS-B, round to nearest binary."""
+    """relax to continuous [0,1], optimize, then round to binary"""
     from scipy.optimize import minimize
 
     def obj(x):
@@ -204,7 +191,7 @@ def scipy_relaxed_solve(Q: np.ndarray, n: int) -> Tuple[dict, float]:
 
 
 def pulp_linearized_solve(Q: np.ndarray, n: int) -> Tuple[dict, float]:
-    """Solve the QUBO via PuLP + CBC by linearizing quadratic terms."""
+    """solve QUBO with PuLP by linearizing the quadratic terms"""
     import pulp
 
     prob = pulp.LpProblem("QUBO_linearized", pulp.LpMinimize)
@@ -243,7 +230,7 @@ def pulp_constrained_solve(
     beta: float = BETA,
     k: int = K,
 ) -> Tuple[dict, float]:
-    """Solve with PuLP + CBC using hard constraints (native formulation)."""
+    """solve with hard constraints instead of penalties"""
     import pulp
 
     n = len(edges)
@@ -284,7 +271,7 @@ def pulp_constrained_solve(
 
 
 def run_solver_benchmark(df, cov, exclusivity_pairs, edges):
-    """Benchmark SA against brute-force, scipy, and PuLP+CBC."""
+    """compare SA against brute force, scipy, and pulp"""
     print()
     print(SEP)
     print("  PART B: CLASSICAL SOLVER BENCHMARKING")
@@ -478,7 +465,7 @@ def run_sa_robustness(df, cov, exclusivity_pairs, edges, n_trials=20):
 # ─────────────────────────────────────────────────────────────
 
 def load_synthetic_data():
-    """Load the original synthetic contract data."""
+    """load the fake contract data"""
     np.random.seed(SEED)
     df = generate_kalshi_contracts()
     df = compute_model_probabilities(df)
@@ -489,7 +476,7 @@ def load_synthetic_data():
 
 
 def load_real_kalshi_data():
-    """Load real Kalshi prediction market data."""
+    """load real kalshi data from API or cache"""
     from kalshi_data import load_kalshi_data, compute_model_probabilities as kmp
     np.random.seed(SEED)
     df, cov, exclusivity_pairs = load_kalshi_data(use_cache=True)

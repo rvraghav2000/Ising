@@ -1,39 +1,29 @@
-#!/usr/bin/env python3
-"""
-Sensitivity Analysis for Quantum Portfolio Optimizer
-====================================================
-
-Runs the Quantum Optimizer repeatedly with varying 'beta' (risk aversion)
-values. For each beta, prints a FULL table of every available contract with
-its selection status, so you can see exactly what was on the table and what
-the solver picked.
-"""
+# sensitivity_analysis.py - sweep beta to see how risk aversion changes portfolio
 
 import numpy as np
 import pandas as pd
 from quantum_portfolio_optimizer import (
-    generate_kalshi_contracts,
-    compute_model_probabilities,
-    build_covariance_matrix,
-    define_exclusivity_pairs,
     build_qubo,
     qubo_to_ising,
     solve_ising,
 )
+from kalshi_data import load_kalshi_data
 
 SEP  = "=" * 108
 THIN = "-" * 108
 
 CATEGORY_EMOJI = {
-    "Fed Rates":  "[FED]",
-    "Inflation":  "[CPI]",
-    "S&P 500":    "[SPX]",
-    "Weather":    "[WX] ",
+    "Inflation (CPI)":        "[CPI]",
+    "GDP Growth":             "[GDP]",
+    "Weather (NYC)":          "[WX] ",
+    "Producer Prices (PPI)":  "[PPI]",
+    "Crypto (BTC)":           "[BTC]",
+    "Fed Rates":              "[FED]",
 }
 
 
 def print_master_table(df: pd.DataFrame, exclusivity_pairs):
-    """Print every contract that is available to the optimizer."""
+    """show all available contracts"""
     print()
     print(SEP)
     print("  ALL AVAILABLE CONTRACTS  (the full universe of picks)")
@@ -66,7 +56,7 @@ def print_master_table(df: pd.DataFrame, exclusivity_pairs):
 
 def print_beta_table(df: pd.DataFrame, solution: dict, beta: float,
                      total_edge: float, energy: float):
-    """For a given beta, print every contract with PICKED / skipped status."""
+    """show what got picked for a given beta"""
     label = ""
     if beta == 0.0:
         label = "(no risk penalty — pure edge maximiser)"
@@ -102,11 +92,8 @@ def run_analysis():
     print()
 
     # -- 1. Build the universe --
-    df = generate_kalshi_contracts()
-    df = compute_model_probabilities(df)
-    cov = build_covariance_matrix(df)
+    df, cov, exclusivity_pairs = load_kalshi_data(use_cache=True)
     edges = df["edge"].values
-    exclusivity_pairs = define_exclusivity_pairs(df)
 
     # -- 2. Show every available contract once --
     print_master_table(df, exclusivity_pairs)

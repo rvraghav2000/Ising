@@ -141,7 +141,7 @@ def qubo_to_ising(Q: np.ndarray):
             if Q[i, j] != 0.0:
                 bqm.add_interaction(i, j, Q[i, j])
 
-    # Convert to Ising (SPIN vartype)
+    # convert to spin vars
     ising_bqm = bqm.change_vartype(dimod.SPIN, inplace=False)
     h = {v: ising_bqm.linear[v] for v in ising_bqm.variables}
     J = {(u, v): bias for (u, v), bias in ising_bqm.quadratic.items()}
@@ -163,9 +163,7 @@ def solve_ising(h: dict, J: dict, offset: float,
     return binary_solution, energy
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# 5. Validation & Reporting
-# ──────────────────────────────────────────────────────────────────────────────
+
 
 def validate_solution(solution: dict,
                       df: pd.DataFrame,
@@ -190,7 +188,6 @@ def validate_solution(solution: dict,
 
 
 def print_summary(df: pd.DataFrame, solution: dict, validation: dict, energy: float):
-    # prints output
     print("\n--- QUANTUM PORTFOLIO OPTIMIZER ---")
 
     header = f"{'#':<4} {'Ticker':<22} {'Contract Name':<35} {'Price':>7} {'Model P':>9} {'Edge':>9} {'Select':>8}"
@@ -229,7 +226,7 @@ def print_summary(df: pd.DataFrame, solution: dict, validation: dict, energy: fl
 
 
 def main():
-    print("\nInitializing optimizer...\n")
+    print("\nrunning optimizer...\n")
 
     print("[1/5] Fetching data...")
     df = generate_kalshi_contracts()
