@@ -1,0 +1,201 @@
+ticker,name,category,series_ticker,event_ticker,structure,mutually_exclusive,event_size,event_price_sum,strike,price,volume,event_volume
+KXFEDDECISION-26SEP-H0,Will the Federal Reserve Hike rates by 0bps at their September 2026 meeting?,Economics,KXFEDDECISION,KXFEDDECISION-26SEP,disjoint,True,3,1.02,,0.46,15560470.03,32073751.3
+KXFEDDECISION-26SEP-H25,Will the Federal Reserve Hike rates by 25bps at their September 2026 meeting?,Economics,KXFEDDECISION,KXFEDDECISION-26SEP,disjoint,True,3,1.02,,0.54,7074547.36,32073751.3
+KXFEDDECISION-26SEP-H26,Will the Federal Reserve Hike rates by >25bps at their September 2026 meeting?,Economics,KXFEDDECISION,KXFEDDECISION-26SEP,disjoint,True,3,1.02,,0.02,9438733.91,32073751.3
+KXMLB-26-ATL,Will Atlanta win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.067,2765659.82,30887749.84
+KXMLB-26-BOS,Will Boston win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.051,3781332.27,30887749.84
+KXMLB-26-CHC,Will Chicago C win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.055,2617325.7,30887749.84
+KXMLB-26-CWS,Will Chicago WS win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.042,2305240.25,30887749.84
+KXMLB-26-HOU,Will Houston win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.034,2082264.72,30887749.84
+KXMLB-26-LAD,Will Los Angeles D win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.31,5114022.09,30887749.84
+KXMLB-26-MIL,Will Milwaukee win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.144,3709220.31,30887749.84
+KXMLB-26-NYY,Will New York Y win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.11,3541790.65,30887749.84
+KXMLB-26-PHI,Will Philadelphia win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.076,2835494.66,30887749.84
+KXMLB-26-TB,Will Tampa Bay win the 2026 Pro Baseball Championship?,Sports,KXMLB,KXMLB-26,disjoint,True,10,0.972,,0.083,2135399.37,30887749.84
+CONTROLH-2026-D,Will Democrats win the House in 2026?,Elections,CONTROLH,CONTROLH-2026,disjoint,True,2,1.0,,0.85,10087200.47,28289409.33
+CONTROLH-2026-R,Will Republicans win the House in 2026?,Elections,CONTROLH,CONTROLH-2026,disjoint,True,2,1.0,,0.15,18202208.86,28289409.33
+KXNBA-27-BOS,Will Boston win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.05,428568.56,20664666.840000004
+KXNBA-27-CLE,Will Cleveland win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.02,893304.75,20664666.840000004
+KXNBA-27-DEN,Will Denver win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.04,437307.22,20664666.840000004
+KXNBA-27-DET,Will Detroit win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.03,249884.83,20664666.840000004
+KXNBA-27-HOU,Will Houston win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.02,190622.69,20664666.840000004
+KXNBA-27-IND,Will Indiana win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.02,644598.48,20664666.840000004
+KXNBA-27-LAL,Will Los Angeles L win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.03,1642151.72,20664666.840000004
+KXNBA-27-MIA,Will Miami win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.04,2492329.5,20664666.840000004
+KXNBA-27-MIN,Will Minnesota win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.05,1772623.34,20664666.840000004
+KXNBA-27-NYK,Will New York win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.08,990495.72,20664666.840000004
+KXNBA-27-OKC,Will Oklahoma City win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.21,513936.46,20664666.840000004
+KXNBA-27-ORL,Will Orlando win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.02,1261853.29,20664666.840000004
+KXNBA-27-PHI,Will Philadelphia win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.1,7659954.35,20664666.840000004
+KXNBA-27-SAS,Will San Antonio win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.22,676599.68,20664666.840000004
+KXNBA-27-TOR,Will Toronto win the 2027 Pro Basketball Finals?,Sports,KXNBA,KXNBA-27,disjoint,True,15,0.95,,0.02,810436.25,20664666.840000004
+KXGOVCA-26-SHIL,Who will win the governorship in California?,Elections,KXGOVCA,KXGOVCA-26,disjoint,True,2,1.0,,0.042,8367336.95,13588658.43
+KXGOVCA-26-XBEC,Who will win the governorship in California?,Elections,KXGOVCA,KXGOVCA-26,disjoint,True,2,1.0,,0.958,5221321.48,13588658.43
+KXATP-26-BLO,Will Alexander Blockx win the US Open Men Singles 2026?,Sports,KXATP,KXATP-26USO,disjoint,True,8,1.09,,0.02,678445.14,11416608.190000001
+KXATP-26-HAL,Will Quentin Halys win the US Open Men Singles 2026?,Sports,KXATP,KXATP-26USO,disjoint,True,8,1.09,,0.03,30.0,11416608.190000001
+KXATP-26USO-ALC,Will Carlos Alcaraz win the US Open Men's Singles?,Sports,KXATP,KXATP-26USO,disjoint,True,8,1.09,,0.58,4059655.81,11416608.190000001
+KXATP-26USO-KHA,Will Karen Khachanov win the US Open Men's Singles?,Sports,KXATP,KXATP-26USO,disjoint,True,8,1.09,,0.03,1020349.09,11416608.190000001
+KXATP-26USO-MUS,Will Lorenzo Musetti win the US Open Men's Singles?,Sports,KXATP,KXATP-26USO,disjoint,True,8,1.09,,0.02,927454.16,11416608.190000001
+KXATP-26USO-SHE,Will Ben Shelton win the US Open Men's Singles?,Sports,KXATP,KXATP-26USO,disjoint,True,8,1.09,,0.09,1883410.57,11416608.190000001
+KXATP-26USO-TIA,Will Frances Tiafoe win the US Open Men's Singles?,Sports,KXATP,KXATP-26USO,disjoint,True,8,1.09,,0.05,1393675.84,11416608.190000001
+KXATP-26USO-ZVE,Will Alexander Zverev win the US Open Men's Singles?,Sports,KXATP,KXATP-26USO,disjoint,True,8,1.09,,0.27,1453587.58,11416608.190000001
+SENATETX-26-D,Will Democratics win the Senate race in Texas?,Elections,SENATETX,SENATETX-26,disjoint,True,2,1.01,,0.47,4543132.43,10678278.78
+SENATETX-26-R,Will Republicans win the Senate race in Texas?,Elections,SENATETX,SENATETX-26,disjoint,True,2,1.01,,0.54,6135146.35,10678278.78
+KXBALANCEPOWERCOMBO-27FEB-DD,Will House Control be Democratic AND Senate Control be Democratic for Feb 2027?,Elections,KXBALANCEPOWERCOMBO,KXBALANCEPOWERCOMBO-27FEB,disjoint,True,3,1.02,,0.48,2698611.66,9431987.23
+KXBALANCEPOWERCOMBO-27FEB-DR,Will House Control be Democratic AND Senate Control be Republican for Feb 2027?,Elections,KXBALANCEPOWERCOMBO,KXBALANCEPOWERCOMBO-27FEB,disjoint,True,3,1.02,,0.37,2067516.23,9431987.23
+KXBALANCEPOWERCOMBO-27FEB-RR,Will House Control be Republican AND Senate Control be Republican for Feb 2027?,Elections,KXBALANCEPOWERCOMBO,KXBALANCEPOWERCOMBO-27FEB,disjoint,True,3,1.02,,0.17,4665859.34,9431987.23
+CONTROLS-2026-D,Will Democrats win the U.S. Senate in 2026?,Elections,CONTROLS,CONTROLS-2026,disjoint,True,2,1.0,,0.47,3455040.8,8041398.2299999995
+CONTROLS-2026-R,Will Republicans win the U.S. Senate in 2026?,Elections,CONTROLS,CONTROLS-2026,disjoint,True,2,1.0,,0.53,4586357.43,8041398.2299999995
+KXLLM1-26DEC31-A,"Best AI on Dec 31, 2026?",Science and Technology,KXLLM1,KXLLM1-26DEC31,disjoint,True,4,0.954,,0.627,2235378.74,7456899.460000001
+KXLLM1-26DEC31-GOOG,"Best AI on Dec 31, 2026?",Science and Technology,KXLLM1,KXLLM1-26DEC31,disjoint,True,4,0.954,,0.054,1519260.08,7456899.460000001
+KXLLM1-26DEC31-OAI,"Best AI on Dec 31, 2026?",Science and Technology,KXLLM1,KXLLM1-26DEC31,disjoint,True,4,0.954,,0.217,2171171.04,7456899.460000001
+KXLLM1-26DEC31-XAI,"Best AI on Dec 31, 2026?",Science and Technology,KXLLM1,KXLLM1-26DEC31,disjoint,True,4,0.954,,0.056,1531089.6,7456899.460000001
+KXBALLONDOR-26-EHAA,Who will win the Ballon d'Or in 2026?,Sports,KXBALLONDOR,KXBALLONDOR-26,disjoint,True,7,1.04,,0.02,331380.58,6001371.0600000005
+KXBALLONDOR-26-HKAN,Who will win the Ballon d'Or in 2026?,Sports,KXBALLONDOR,KXBALLONDOR-26,disjoint,True,7,1.04,,0.64,1517296.76,6001371.0600000005
+KXBALLONDOR-26-KKVA,Who will win the Ballon d'Or in 2026?,Sports,KXBALLONDOR,KXBALLONDOR-26,disjoint,True,7,1.04,,0.03,318263.76,6001371.0600000005
+KXBALLONDOR-26-KMBA,Who will win the Ballon d'Or in 2026?,Sports,KXBALLONDOR,KXBALLONDOR-26,disjoint,True,7,1.04,,0.13,1310288.28,6001371.0600000005
+KXBALLONDOR-26-LMES,Who will win the Ballon d'Or in 2026?,Sports,KXBALLONDOR,KXBALLONDOR-26,disjoint,True,7,1.04,,0.04,913638.12,6001371.0600000005
+KXBALLONDOR-26-LYAM,Who will win the Ballon d'Or in 2026?,Sports,KXBALLONDOR,KXBALLONDOR-26,disjoint,True,7,1.04,,0.14,863826.2,6001371.0600000005
+KXBALLONDOR-26-RODR,Who will win the Ballon d'Or in 2026?,Sports,KXBALLONDOR,KXBALLONDOR-26,disjoint,True,7,1.04,,0.04,746677.36,6001371.0600000005
+KXNFLNFCCHAMP-27-ATL,Will Atlanta win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.02,72046.4,5240272.8
+KXNFLNFCCHAMP-27-CAR,Will Carolina win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.02,161065.78,5240272.8
+KXNFLNFCCHAMP-27-CHI,Will Chicago win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.08,377180.89,5240272.8
+KXNFLNFCCHAMP-27-DAL,Will Dallas win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.09,889672.9,5240272.8
+KXNFLNFCCHAMP-27-DET,Will Detroit win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.09,147240.36,5240272.8
+KXNFLNFCCHAMP-27-GB,Will Green Bay win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.08,113366.18,5240272.8
+KXNFLNFCCHAMP-27-LAR,Will Los Angeles R win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.24,649675.91,5240272.8
+KXNFLNFCCHAMP-27-MIN,Will Minnesota win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.04,466149.87,5240272.8
+KXNFLNFCCHAMP-27-NO,Will New Orleans win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.02,286800.78,5240272.8
+KXNFLNFCCHAMP-27-NYG,Will New York G win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.03,499011.2,5240272.8
+KXNFLNFCCHAMP-27-PHI,Will Philadelphia win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.1,246827.63,5240272.8
+KXNFLNFCCHAMP-27-SEA,Will Seattle win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.12,510891.26,5240272.8
+KXNFLNFCCHAMP-27-SF,Will San Francisco win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.09,386892.95,5240272.8
+KXNFLNFCCHAMP-27-TB,Will Tampa Bay win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.04,178320.92,5240272.8
+KXNFLNFCCHAMP-27-WAS,Will Washington win the Pro Football NFC Championship?,Sports,KXNFLNFCCHAMP,KXNFLNFCCHAMP-27,disjoint,True,15,1.09,,0.03,255129.77,5240272.8
+KXF1-26-GR,Will George Russell win the F1 Drivers Championship?,Sports,KXF1,KXF1-26,disjoint,True,4,0.97,,0.05,1123563.2,4976799.28
+KXF1-26-KA,Will Andrea Kimi Antonelli win the F1 Drivers Championship?,Sports,KXF1,KXF1-26,disjoint,True,4,0.97,,0.87,1474000.17,4976799.28
+KXF1-26-LH,Will Lewis Hamilton win the F1 Drivers Championship?,Sports,KXF1,KXF1-26,disjoint,True,4,0.97,,0.02,1501274.98,4976799.28
+KXF1-26-LN,Will Lando Norris win the F1 Drivers Championship?,Sports,KXF1,KXF1-26,disjoint,True,4,0.97,,0.03,877960.93,4976799.28
+SENATEME-26-D,Will Democratics win the Senate race in Maine?,Elections,SENATEME,SENATEME-26,disjoint,True,2,1.0,,0.68,1972026.27,4669563.35
+SENATEME-26-R,Will Republicans win the Senate race in Maine?,Elections,SENATEME,SENATEME-26,disjoint,True,2,1.0,,0.32,2697537.08,4669563.35
+KXMLBAL-26-BOS,Will Boston win the 2026 Pro Baseball American League Championship?,Sports,KXMLBAL,KXMLBAL-26,disjoint,True,9,0.99,,0.16,795062.13,4605926.0200000005
+KXMLBAL-26-CLE,Will Cleveland win the 2026 Pro Baseball American League Championship?,Sports,KXMLBAL,KXMLBAL-26,disjoint,True,9,0.99,,0.07,362913.93,4605926.0200000005
+KXMLBAL-26-CWS,Will Chicago WS win the 2026 Pro Baseball American League Championship?,Sports,KXMLBAL,KXMLBAL-26,disjoint,True,9,0.99,,0.11,443027.72,4605926.0200000005
+KXMLBAL-26-HOU,Will Houston win the 2026 Pro Baseball American League Championship?,Sports,KXMLBAL,KXMLBAL-26,disjoint,True,9,0.99,,0.08,422822.52,4605926.0200000005
+KXMLBAL-26-NYY,Will New York Y win the 2026 Pro Baseball American League Championship?,Sports,KXMLBAL,KXMLBAL-26,disjoint,True,9,0.99,,0.23,696413.81,4605926.0200000005
+KXMLBAL-26-SEA,Will Seattle win the 2026 Pro Baseball American League Championship?,Sports,KXMLBAL,KXMLBAL-26,disjoint,True,9,0.99,,0.02,681212.03,4605926.0200000005
+KXMLBAL-26-TB,Will Tampa Bay win the 2026 Pro Baseball American League Championship?,Sports,KXMLBAL,KXMLBAL-26,disjoint,True,9,0.99,,0.23,665054.86,4605926.0200000005
+KXMLBAL-26-TEX,Will Texas win the 2026 Pro Baseball American League Championship?,Sports,KXMLBAL,KXMLBAL-26,disjoint,True,9,0.99,,0.04,286828.66,4605926.0200000005
+KXMLBAL-26-TOR,Will Toronto win the 2026 Pro Baseball American League Championship?,Sports,KXMLBAL,KXMLBAL-26,disjoint,True,9,0.99,,0.05,252590.36,4605926.0200000005
+KXINXY-26DEC31H1600-B6300,"Will the S&P 500 be between 6200 and 6399.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,6300.0,0.02,217060.71,4309571.0
+KXINXY-26DEC31H1600-B6700,"Will the S&P 500 be between 6600 and 6799.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,6700.0,0.02,214946.84,4309571.0
+KXINXY-26DEC31H1600-B6900,"Will the S&P 500 be between 6800 and 6999.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,6900.0,0.03,274472.12,4309571.0
+KXINXY-26DEC31H1600-B7100,"Will the S&P 500 be between 7000 and 7199.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,7100.0,0.04,262542.06,4309571.0
+KXINXY-26DEC31H1600-B7300,"Will the S&P 500 be between 7200 and 7399.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,7300.0,0.05,318231.69,4309571.0
+KXINXY-26DEC31H1600-B7500,"Will the S&P 500 be between 7400 and 7599.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,7500.0,0.1,446544.11,4309571.0
+KXINXY-26DEC31H1600-B7700,"Will the S&P 500 be between 7600 and 7799.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,7700.0,0.12,457309.91,4309571.0
+KXINXY-26DEC31H1600-B7900,"Will the S&P 500 be between 7800 and 7999.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,7900.0,0.18,447381.41,4309571.0
+KXINXY-26DEC31H1600-B8100,"Will the S&P 500 be between 8000 and 8199.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,8100.0,0.16,486179.95,4309571.0
+KXINXY-26DEC31H1600-B8300,"Will the S&P 500 be between 8200 and 8399.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,8300.0,0.08,296764.06,4309571.0
+KXINXY-26DEC31H1600-B8500,"Will the S&P 500 be between 8400 and 8599.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,8500.0,0.06,200415.03,4309571.0
+KXINXY-26DEC31H1600-B8700,"Will the S&P 500 be between 8600 and 8799.99 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,8700.0,0.03,171354.07,4309571.0
+KXINXY-26DEC31H1600-B8900,"Will the S&P 500 be between 8800 and 9000 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,8900.0,0.02,260288.68,4309571.0
+KXINXY-26DEC31H1600-T9000,"Will the S&P 500 be above 9000 on Dec 31, 2026 at 4pm EST?",Financials,KXINXY,KXINXY-26DEC31H1600,disjoint,True,14,0.94,9000.0,0.03,256080.36,4309571.0
+KXTAKEOVERACQWB-27JUN30-NFLX,Will Netflix's takeover of Warner Brothers succeed Before July 2027?,Companies,KXTAKEOVERACQWB,KXTAKEOVERACQWB-27JUN30,disjoint,True,3,1.03,,0.04,1554316.65,4265899.44
+KXTAKEOVERACQWB-27JUN30-NONE,Will None's takeover of Warner Brothers succeed Before July 2027?,Companies,KXTAKEOVERACQWB,KXTAKEOVERACQWB-27JUN30,disjoint,True,3,1.03,,0.18,926819.47,4265899.44
+KXTAKEOVERACQWB-27JUN30-PSKY,Will Paramount's takeover of Warner Brothers succeed Before July 2027?,Companies,KXTAKEOVERACQWB,KXTAKEOVERACQWB-27JUN30,disjoint,True,3,1.03,,0.81,1784763.32,4265899.44
+KXNFLAFCCHAMP-27-BAL,Will Baltimore win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.13,204153.7,4220125.359999999
+KXNFLAFCCHAMP-27-BUF,Will Buffalo win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.16,493304.38,4220125.359999999
+KXNFLAFCCHAMP-27-CIN,Will Cincinnati win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.09,487593.5,4220125.359999999
+KXNFLAFCCHAMP-27-DEN,Will Denver win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.11,657421.88,4220125.359999999
+KXNFLAFCCHAMP-27-HOU,Will Houston win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.1,642957.47,4220125.359999999
+KXNFLAFCCHAMP-27-IND,Will Indianapolis win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.03,76683.07,4220125.359999999
+KXNFLAFCCHAMP-27-JAC,Will Jacksonville win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.07,146669.99,4220125.359999999
+KXNFLAFCCHAMP-27-KC,Will Kansas City win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.12,256637.0,4220125.359999999
+KXNFLAFCCHAMP-27-LAC,Will Los Angeles C win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.11,231786.28,4220125.359999999
+KXNFLAFCCHAMP-27-NE,Will New England win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.1,242787.83,4220125.359999999
+KXNFLAFCCHAMP-27-PIT,Will Pittsburgh win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.03,408024.99,4220125.359999999
+KXNFLAFCCHAMP-27-TEN,Will Tennessee win the Pro Football AFC Championship?,Sports,KXNFLAFCCHAMP,KXNFLAFCCHAMP-27,disjoint,True,12,1.07,,0.02,372105.27,4220125.359999999
+KXOSCARPIC-27-AVEN,Will Avengers: Doomsday win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.02,282475.05,3516187.3
+KXOSCARPIC-27-BEH,Will Behemoth win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.02,60729.76,3516187.3
+KXOSCARPIC-27-BLA,Will The Black Ball win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.11,266190.56,3516187.3
+KXOSCARPIC-27-DEB,Will The Debut win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.04,136878.23,3516187.3
+KXOSCARPIC-27-DIG,Will Digger win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.05,206433.36,3516187.3
+KXOSCARPIC-27-DUN,Will Dune: Part Three win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.13,396859.04,3516187.3
+KXOSCARPIC-27-ODY,Will The Odyssey win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.49,1508883.01,3516187.3
+KXOSCARPIC-27-PRO,Will Project Hail Mary win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.02,259239.16,3516187.3
+KXOSCARPIC-27-SOC,Will The Social Reckoning win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.02,123577.54,3516187.3
+KXOSCARPIC-27-WIL,Will Wild Horse Nine win Best Picture at the Oscars?,Entertainment,KXOSCARPIC,KXOSCARPIC-27,disjoint,True,10,0.97,,0.07,274921.59,3516187.3
+KXWNBA-26-ATL,Will Atlanta win the 2026 Women's Pro Basketball Championship?,Sports,KXWNBA,KXWNBA-26,disjoint,True,7,0.98,,0.12,460929.47,3438052.3600000003
+KXWNBA-26-GS,Will Golden State win the 2026 Women's Pro Basketball Championship?,Sports,KXWNBA,KXWNBA-26,disjoint,True,7,0.98,,0.11,573946.29,3438052.3600000003
+KXWNBA-26-IND,Will Indiana win the 2026 Women's Pro Basketball Championship?,Sports,KXWNBA,KXWNBA-26,disjoint,True,7,0.98,,0.12,779126.26,3438052.3600000003
+KXWNBA-26-LV,Will Las Vegas win the 2026 Women's Pro Basketball Championship?,Sports,KXWNBA,KXWNBA-26,disjoint,True,7,0.98,,0.09,338995.27,3438052.3600000003
+KXWNBA-26-MIN,Will Minnesota win the 2026 Women's Pro Basketball Championship?,Sports,KXWNBA,KXWNBA-26,disjoint,True,7,0.98,,0.46,555684.46,3438052.3600000003
+KXWNBA-26-NY,Will New York win the 2026 Women's Pro Basketball Championship?,Sports,KXWNBA,KXWNBA-26,disjoint,True,7,0.98,,0.06,456309.66,3438052.3600000003
+KXWNBA-26-WSH,Will Washington win the 2026 Women's Pro Basketball Championship?,Sports,KXWNBA,KXWNBA-26,disjoint,True,7,0.98,,0.02,273060.95,3438052.3600000003
+KXRATECUTCOUNT-26DEC31-T0,Will the Fed cut rates 0 times?,Economics,KXRATECUTCOUNT,KXRATECUTCOUNT-26DEC31,disjoint,True,2,1.002,0.0,0.912,2392472.68,3293622.16
+KXRATECUTCOUNT-26DEC31-T1,Will the Fed cut rates 1 times?,Economics,KXRATECUTCOUNT,KXRATECUTCOUNT-26DEC31,disjoint,True,2,1.002,1.0,0.09,901149.48,3293622.16
+KXNASCARCUPSERIES-NCS26-BWAL,Will Bubba Wallace be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.02,219859.79,3203213.31
+KXNASCARCUPSERIES-NCS26-CBEL,Will Christopher Bell be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.19,274170.06,3203213.31
+KXNASCARCUPSERIES-NCS26-CBRI,Will Chase Briscoe be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.06,228106.78,3203213.31
+KXNASCARCUPSERIES-NCS26-CELL,Will Chase Elliott be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.02,273577.95,3203213.31
+KXNASCARCUPSERIES-NCS26-DHAM,Will Denny Hamlin be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.37,570814.45,3203213.31
+KXNASCARCUPSERIES-NCS26-JLOG,Will Joey Logano be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.05,290363.07,3203213.31
+KXNASCARCUPSERIES-NCS26-KLAR,Will Kyle Larson be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.07,335813.73,3203213.31
+KXNASCARCUPSERIES-NCS26-RBLA,Will Ryan Blaney be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.15,308912.21,3203213.31
+KXNASCARCUPSERIES-NCS26-TGIB,Will Ty Gibbs be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.06,214577.89,3203213.31
+KXNASCARCUPSERIES-NCS26-TRED,Will Tyler Reddick be the NASCAR Cup Series Champion?,Sports,KXNASCARCUPSERIES,KXNASCARCUPSERIES-NCS26,disjoint,True,10,1.06,,0.07,487017.38,3203213.31
+KXWTA-26USO-AND,Will Mirra Andreeva win the US Open Women's Singles?,Sports,KXWTA,KXWTA-26USO,disjoint,True,8,1.08,,0.09,191108.54,3196846.99
+KXWTA-26USO-GAU,Will Coco Gauff win the US Open Women's Singles?,Sports,KXWTA,KXWTA-26USO,disjoint,True,8,1.08,,0.23,716461.38,3196846.99
+KXWTA-26USO-NAV,Will Emma Navarro win the US Open Women's Singles?,Sports,KXWTA,KXWTA-26USO,disjoint,True,8,1.08,,0.03,568131.87,3196846.99
+KXWTA-26USO-PEG,Will Jessica Pegula win the US Open Women's Singles?,Sports,KXWTA,KXWTA-26USO,disjoint,True,8,1.08,,0.11,326747.64,3196846.99
+KXWTA-26USO-RYB,Will Elena Rybakina win the US Open Women's Singles?,Sports,KXWTA,KXWTA-26USO,disjoint,True,8,1.08,,0.2,387759.32,3196846.99
+KXWTA-26USO-SAB,Will Aryna Sabalenka win the US Open Women's Singles?,Sports,KXWTA,KXWTA-26USO,disjoint,True,8,1.08,,0.36,434461.93,3196846.99
+KXWTA-26USO-SWI,Will Iga Swiatek win the US Open Women's Singles?,Sports,KXWTA,KXWTA-26USO,disjoint,True,8,1.08,,0.02,294259.07,3196846.99
+KXWTA-26USO-ZHE,Will Qinwen Zheng win the US Open Women's Singles?,Sports,KXWTA,KXWTA-26USO,disjoint,True,8,1.08,,0.04,277917.24,3196846.99
+SENATEMI-26-D,Will Democratics win the Senate race in Michigan?,Elections,SENATEMI,SENATEMI-26,disjoint,True,2,1.0,,0.63,1285276.47,3170916.44
+SENATEMI-26-R,Will Republicans win the Senate race in Michigan?,Elections,SENATEMI,SENATEMI-26,disjoint,True,2,1.0,,0.37,1885639.97,3170916.44
+SENATEOHS-26-D,Will Democratics win the Senate race in Ohio?,Elections,SENATEOHS,SENATEOHS-26,disjoint,True,2,1.01,,0.54,1125615.57,2630617.0300000003
+SENATEOHS-26-R,Will Republicans win the Senate race in Ohio?,Elections,SENATEOHS,SENATEOHS-26,disjoint,True,2,1.01,,0.47,1505001.46,2630617.0300000003
+KXWTIMAX-26DEC31-T115,"Will the maximum WTI front month settle price reach $115.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,115.0,0.295,1511933.32,7857852.54
+KXWTIMAX-26DEC31-T120,"Will the maximum WTI front month settle price reach $120.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,120.0,0.246,828754.89,7857852.54
+KXWTIMAX-26DEC31-T125,"Will the maximum WTI front month settle price reach $125.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,125.0,0.214,614535.07,7857852.54
+KXWTIMAX-26DEC31-T130,"Will the maximum WTI front month settle price reach $130.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,130.0,0.17,661779.87,7857852.54
+KXWTIMAX-26DEC31-T135,"Will the maximum WTI front month settle price reach $135.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,135.0,0.125,462343.5,7857852.54
+KXWTIMAX-26DEC31-T140,"Will the maximum WTI front month settle price reach $140.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,140.0,0.11,695400.36,7857852.54
+KXWTIMAX-26DEC31-T150,"Will the maximum WTI front month settle price reach $150.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,150.0,0.099,919860.41,7857852.54
+KXWTIMAX-26DEC31-T160,"Will the maximum WTI front month settle price reach $160.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,160.0,0.08,644858.15,7857852.54
+KXWTIMAX-26DEC31-T180,"Will the maximum WTI front month settle price reach $180.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,180.0,0.073,875482.17,7857852.54
+KXWTIMAX-26DEC31-T200,"Will the maximum WTI front month settle price reach $200.01 by Dec 31, 2026?",Financials,KXWTIMAX,KXWTIMAX-26DEC31,nested,False,10,1.482,200.0,0.07,642904.8,7857852.54
+KXALIENS-26DEC,"Will the U.S. confirm that aliens exist before Dec 1, 2026?",Science and Technology,KXALIENS,KXALIENS-27,unstructured,False,5,0.431,,0.03,168801.31,29386582.840000004
+KXALIENS-26NOV,"Will the U.S. confirm that aliens exist before Nov 1, 2026?",Science and Technology,KXALIENS,KXALIENS-27,unstructured,False,5,0.431,,0.02,325335.21,29386582.840000004
+KXALIENS-27,Will the U.S. confirm that aliens exist before 2027?,Science and Technology,KXALIENS,KXALIENS-27,unstructured,False,5,0.431,,0.051,27610642.05,29386582.840000004
+KXALIENS-27-28,Will the U.S. confirm that aliens exist in 2028?,Science and Technology,KXALIENS,KXALIENS-27,unstructured,False,5,0.431,,0.13,690728.26,29386582.840000004
+KXALIENS-27-29,Will the U.S. confirm that aliens exist in 2029?,Science and Technology,KXALIENS,KXALIENS-27,unstructured,False,5,0.431,,0.2,591076.01,29386582.840000004
+KXTRUMPOUT27-27-28,Will Donald Trump leave office before 2028?,Politics,KXTRUMPOUT27,KXTRUMPOUT27-27,unstructured,False,3,0.481,,0.18,851915.91,7306223.52
+KXTRUMPOUT27-27-DJT,Donald Trump out before 2027?,Politics,KXTRUMPOUT27,KXTRUMPOUT27-27,unstructured,False,3,0.481,,0.051,5893925.84,7306223.52
+KXTRUMPOUT27-27-JAN2029,"Will Donald Trump leave office before January 20, 2029?",Politics,KXTRUMPOUT27,KXTRUMPOUT27-27,unstructured,False,3,0.481,,0.25,560381.77,7306223.52
+KXGREENLAND-29,Will Trump buy Greenland?,Politics,KXGREENLAND,KXGREENLAND-29,unstructured,False,2,0.23,,0.19,3476086.71,4971822.3
+KXGREENLAND-29-27,Will Trump buy Greenland?,Politics,KXGREENLAND,KXGREENLAND-29,unstructured,False,2,0.23,,0.04,1495735.59,4971822.3
+KXBTCMINY-27JAN01-40000.00,"Will Bitcoin be below $40000.00 by Jan 1, 2027 at 12:00am ET?",Crypto,KXBTCMINY,KXBTCMINY-27JAN01,unstructured,False,4,0.64,,0.1,1236775.6,4829212.53
+KXBTCMINY-27JAN01-45000.00,"Will Bitcoin be below $45000.00 by Jan 1, 2027 at 12:00am ET?",Crypto,KXBTCMINY,KXBTCMINY-27JAN01,unstructured,False,4,0.64,,0.14,817386.47,4829212.53
+KXBTCMINY-27JAN01-50000.00,"Will Bitcoin be below $50000.00 by Jan 1, 2027 at 12:00am ET?",Crypto,KXBTCMINY,KXBTCMINY-27JAN01,unstructured,False,4,0.64,,0.17,1308753.3,4829212.53
+KXBTCMINY-27JAN01-55000.00,"Will Bitcoin be below $55000.00 by Jan 1, 2027 at 12:00am ET?",Crypto,KXBTCMINY,KXBTCMINY-27JAN01,unstructured,False,4,0.64,,0.23,1466297.16,4829212.53
+KXBTCMAXY-26DEC31-109999.99,"Will Bitcoin be above $109,999.99 by Dec 31, 2026 at 11:59 PM ET?",Crypto,KXBTCMAXY,KXBTCMAXY-26DEC31,unstructured,False,7,0.68,,0.13,596685.01,4618103.12
+KXBTCMAXY-26DEC31-119999.99,"Will Bitcoin be above $119,999.99 by Dec 31, 2026 at 11:59 PM ET?",Crypto,KXBTCMAXY,KXBTCMAXY-26DEC31,unstructured,False,7,0.68,,0.12,566593.84,4618103.12
+KXBTCMAXY-26DEC31-129999.99,"Will Bitcoin be above $129,999.99 by Dec 31, 2026 at 11:59 PM ET?",Crypto,KXBTCMAXY,KXBTCMAXY-26DEC31,unstructured,False,7,0.68,,0.07,437624.81,4618103.12
+KXBTCMAXY-26DEC31-139999.99,"Will Bitcoin be above $139,999.99 by Dec 31, 2026 at 11:59 PM ET?",Crypto,KXBTCMAXY,KXBTCMAXY-26DEC31,unstructured,False,7,0.68,,0.06,316875.02,4618103.12
+KXBTCMAXY-26DEC31-149999.99,"Will Bitcoin be above $149,999.99 by Dec 31, 2026 at 11:59 PM ET?",Crypto,KXBTCMAXY,KXBTCMAXY-26DEC31,unstructured,False,7,0.68,,0.04,445283.67,4618103.12
+KXBTCMAXY-26DEC31-199999.99,"Will Bitcoin be above $199,999.99 by Dec 31, 2026 at 11:59 PM ET?",Crypto,KXBTCMAXY,KXBTCMAXY-26DEC31,unstructured,False,7,0.68,,0.02,842550.09,4618103.12
+KXBTCMAXY-26DEC31-99999.99,"Will Bitcoin be above $99,999.99 by Dec 31, 2026 at 11:59 PM ET?",Crypto,KXBTCMAXY,KXBTCMAXY-26DEC31,unstructured,False,7,0.68,,0.24,1412490.68,4618103.12
+KXVENEZUELALEADER-26DEC31-DFIG,"Will Dinorah Figuera be the head of state of Venezuela on Dec 31, 2026?",Elections,KXVENEZUELALEADER,KXVENEZUELALEADER-26DEC31,unstructured,False,9,1.238,,0.023,17933.14,3752929.89
+KXVENEZUELALEADER-26DEC31-DJT,"Will Donald Trump be the head of state of Venezuela on Dec 31, 2026?",Elections,KXVENEZUELALEADER,KXVENEZUELALEADER-26DEC31,unstructured,False,9,1.238,,0.02,351726.1,3752929.89
+KXVENEZUELALEADER-26DEC31-DROD,"Will Delcy Rodríguez be the head of state of Venezuela on Dec 31, 2026?",Elections,KXVENEZUELALEADER,KXVENEZUELALEADER-26DEC31,unstructured,False,9,1.238,,0.15,1230308.25,3752929.89
+KXVENEZUELALEADER-26DEC31-DRON,"Will Diosdado Cabello Rondón be the head of state of Venezuela on Dec 31, 2026?",Elections,KXVENEZUELALEADER,KXVENEZUELALEADER-26DEC31,unstructured,False,9,1.238,,0.037,85132.31,3752929.89
+KXVENEZUELALEADER-26DEC31-JROD,"Will Jorge Rodríguez be the head of state of Venezuela on Dec 31, 2026?",Elections,KXVENEZUELALEADER,KXVENEZUELALEADER-26DEC31,unstructured,False,9,1.238,,0.06,44104.47,3752929.89
+KXVENEZUELALEADER-26DEC31-MCM,"Will María Corina Machado be the head of state of Venezuela on Dec 31, 2026?",Elections,KXVENEZUELALEADER,KXVENEZUELALEADER-26DEC31,unstructured,False,9,1.238,,0.039,1100818.23,3752929.89
+KXVENEZUELALEADER-26DEC31-MRT,"Will Miguel Rodríguez Torres be the head of state of Venezuela on Dec 31, 2026?",Elections,KXVENEZUELALEADER,KXVENEZUELALEADER-26DEC31,unstructured,False,9,1.238,,0.02,1921.0,3752929.89
+KXVENEZUELALEADER-26DEC31-NMAD,"Will Nicolás Maduro be the head of state of Venezuela on Dec 31, 2026?",Elections,KXVENEZUELALEADER,KXVENEZUELALEADER-26DEC31,unstructured,False,9,1.238,,0.86,853348.54,3752929.89
+KXVENEZUELALEADER-26DEC31-VLOP,"Will Vladimir Padrino López be the head of state of Venezuela on Dec 31, 2026?",Elections,KXVENEZUELALEADER,KXVENEZUELALEADER-26DEC31,unstructured,False,9,1.238,,0.029,67637.85,3752929.89
+KXGREENTERRITORY-29,Will the United States acquire any part of Greenland before 2029?,Politics,KXGREENTERRITORY,KXGREENTERRITORY-29,unstructured,False,2,0.269,,0.23,2826829.37,3330625.56
+KXGREENTERRITORY-29-27,"Will the United States acquire any part of Greenland before Jan 1, 2027?",Politics,KXGREENTERRITORY,KXGREENTERRITORY-29,unstructured,False,2,0.269,,0.039,503796.19,3330625.56

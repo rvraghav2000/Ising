@@ -1,0 +1,4 @@
+mode,draws,frac_violation,median_var_ratio_when_violated,median_edge_diff_when_violated,paper_draw_violation
+none,100,0.73,0.29628060102989945,-0.016909706837217486,True
+cap,100,0.96,0.5847419579123532,-0.003327641689460306,True
+match,100,0.86,0.396010020560245,-0.006167059347133351,False

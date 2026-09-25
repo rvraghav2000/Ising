@@ -1,0 +1,112 @@
+
+==============================================================================================================
+  200-CONTRACT BENCHMARK  |  empirical covariance  |  K=3
+==============================================================================================================
+  contracts=167  events=32  exclusivity pairs=496
+  beta=0.5  gamma=2.0  lambda=5.0  edge=+/-10% of price
+  min eigenvalue of Sigma: -1.80e-16
+  edge: mean=-0.0010 sd=0.0143 min=-0.0631 max=+0.0577
+
+==============================================================================================================
+  PART A: EXCLUSIVITY ABLATION  (best of 5 seeds)
+==============================================================================================================
+   lambda       Edge   Variance   Risk-Adj  Viol  Budget  Portfolio
+--------------------------------------------------------------------------------------------------------------
+      0.0    +0.0589     0.0356    +0.0410     1    True  KXRATECUTCOUNT-26DEC31-T0, KXRATECUTCOUNT-26DEC31-T1 ***
+      1.0    +0.1143     0.2201    +0.0042     0    True  KXRATECUTCOUNT-26DEC31-T0, KXALIENS-26NOV, KXVENEZUE
+      2.0    +0.1132     0.2220    +0.0022     0    True  KXINXY-26DEC31H1600-B8900, KXRATECUTCOUNT-26DEC31-T0
+      5.0    +0.1164     0.2321    +0.0003     0    True  KXMLB-26-HOU, KXRATECUTCOUNT-26DEC31-T0, KXVENEZUELA
+     10.0    +0.1139     0.2205    +0.0037     0    True  KXOSCARPIC-27-PRO, KXRATECUTCOUNT-26DEC31-T0, KXVENE
+     20.0    +0.1152     0.2293    +0.0006     0    True  KXINXY-26DEC31H1600-B6900, KXRATECUTCOUNT-26DEC31-T0
+--------------------------------------------------------------------------------------------------------------
+
+  KEY FINDING: at lambda=0 the optimiser selects 1 logically contradictory pair(s), and does so at variance 0.0356 --
+  lower than every valid portfolio (best valid variance 0.2201). The contradiction is selected as a hedge, not for edge.
+==============================================================================================================
+
+==============================================================================================================
+  PART B: SOLVER BENCHMARKING
+==============================================================================================================
+  n=167  K=3  aux binaries for MILP encodings: linearized=13861, native=13861
+
+  [exact] enumerating C(167,3) = 762,355 feasible portfolios...
+          E=-18.006195  t=3.78s
+
+  [SA] simulated annealing (dwave-neal)...
+       t=27.44s
+
+  [SciPy] continuous relaxation + rounding...
+          t=0.60s
+
+  [PuLP+CBC (QUBO)] ...
+          t=300.90s
+
+  [PuLP+CBC (native)] ...
+          t=102.78s
+
+==============================================================================================================
+  Solver                       Energy       Gap      Edge       Var  #Sel  Budget  Viol   Time (s)
+--------------------------------------------------------------------------------------------------------------
+  Exact C(n,K)             -18.006195    0.000%   +0.1155    0.2186     3    True     0       3.78
+  SA (Ising)               -17.998263    0.044%   +0.0584    0.1202     3    True     0      27.44
+  SciPy relax+round          0.000000  100.000%   +0.0000    0.0000     0   False     0       0.60
+  PuLP+CBC (QUBO)          -17.954681    0.286%   -0.0016    0.0873     3    True     0     300.90
+  PuLP+CBC (native)        -18.006195    0.000%   +0.1155    0.2186     3    True     0     102.78
+--------------------------------------------------------------------------------------------------------------
+  gap is measured against the exact optimum over C(167,3)
+
+  SELECTED PORTFOLIOS:
+    Exact C(n,K)           KXOSCARPIC-27-SOC, KXRATECUTCOUNT-26DEC31-T0, KXVENEZUELALEADER-26DEC31-NMAD
+    SA (Ising)             KXNBA-27-IND, KXWNBA-26-WSH, KXRATECUTCOUNT-26DEC31-T0
+    SciPy relax+round      
+    PuLP+CBC (QUBO)        KXINXY-26DEC31H1600-B8900, KXOSCARPIC-27-DEB, KXWTA-26USO-NAV
+    PuLP+CBC (native)      KXOSCARPIC-27-SOC, KXRATECUTCOUNT-26DEC31-T0, KXVENEZUELALEADER-26DEC31-NMAD
+==============================================================================================================
+
+==============================================================================================================
+  PART C: SA ROBUSTNESS TEST (20 independent runs)
+==============================================================================================================
+
+  Energy:  mean=-17.9997  std=0.0028  min=-18.0062  max=-17.9955
+  Budget satisfied:   20/20
+  Zero violations:    20/20
+  Avg time per run:   27.9046s
+  Unique portfolios:  19 / 20
+      1x  KXNFLNFCCHAMP-27-NO, KXOSCARPIC-27-BEH, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXMLBAL-26-SEA, KXOSCARPIC-27-BEH, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXNFLNFCCHAMP-27-NO, KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-CELL
+      1x  KXOSCARPIC-27-SOC, KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-CELL
+      2x  KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-BWAL, KXVENEZUELALEADER-26DEC31-NMAD
+      1x  KXFEDDECISION-26SEP-H26, KXRATECUTCOUNT-26DEC31-T0, KXVENEZUELALEADER-26DEC31-NMAD
+      1x  KXWNBA-26-WSH, KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-BWAL
+      1x  KXFEDDECISION-26SEP-H26, KXNFLNFCCHAMP-27-ATL, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXINXY-26DEC31H1600-B6700, KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-CELL
+      1x  KXATP-26USO-MUS, KXRATECUTCOUNT-26DEC31-T0, KXBTCMAXY-26DEC31-199999.99
+      1x  KXOSCARPIC-27-BEH, KXRATECUTCOUNT-26DEC31-T0, KXBTCMAXY-26DEC31-199999.99
+      1x  KXATP-26USO-MUS, KXNFLNFCCHAMP-27-ATL, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXFEDDECISION-26SEP-H26, KXWNBA-26-WSH, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXNBA-27-TOR, KXRATECUTCOUNT-26DEC31-T0, KXVENEZUELALEADER-26DEC31-NMAD
+      1x  KXINXY-26DEC31H1600-B6300, KXRATECUTCOUNT-26DEC31-T0, KXALIENS-26NOV
+      1x  KXMLB-26-HOU, KXRATECUTCOUNT-26DEC31-T0, KXVENEZUELALEADER-26DEC31-NMAD
+      1x  KXNBA-27-IND, KXNFLNFCCHAMP-27-NO, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXNFLNFCCHAMP-27-ATL, KXINXY-26DEC31H1600-B6700, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXATP-26USO-MUS, KXOSCARPIC-27-PRO, KXRATECUTCOUNT-26DEC31-T0
+==============================================================================================================
+
+==============================================================================================================
+  PART D: RISK-AVERSION SWEEP (beta)
+==============================================================================================================
+    beta       Edge   Variance   Risk-Adj  Viol  Portfolio
+--------------------------------------------------------------------------------------------------------------
+    0.00    +0.1377     0.6003    +0.1377     0  KXFEDDECISION-26SEP-H25, KXRATECUTCOUNT-26DEC31-T0, SENATE
+    0.40    +0.1155     0.2186    +0.0281     0  KXOSCARPIC-27-SOC, KXRATECUTCOUNT-26DEC31-T0, KXVENEZUELAL
+    0.80    +0.0581     0.1186    -0.0367     0  KXNFLNFCCHAMP-27-ATL, KXINXY-26DEC31H1600-B6700, KXRATECUT
+    1.20    +0.0045     0.0578    -0.0649     0  KXATP-26USO-MUS, KXNFLNFCCHAMP-27-ATL, KXNASCARCUPSERIES-N
+    1.60    +0.0042     0.0578    -0.0883     0  KXWNBA-26-WSH, KXNASCARCUPSERIES-NCS26-CELL, KXBTCMAXY-26D
+    2.00    +0.0045     0.0578    -0.1111     0  KXATP-26USO-MUS, KXNFLNFCCHAMP-27-ATL, KXNASCARCUPSERIES-N
+--------------------------------------------------------------------------------------------------------------
+==============================================================================================================
+
+  wrote ablation_200_K3.csv, benchmark_200_K3.csv, robustness_200_K3.csv, sensitivity_200_K3.csv
+==============================================================================================================
+

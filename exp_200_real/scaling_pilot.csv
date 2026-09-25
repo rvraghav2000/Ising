@@ -1,0 +1,10 @@
+n,K,solver,energy,time_s,n_selected,budget_ok,violations,proved_optimal,excl_pairs,num_reads,status
+12,1,SA,-0.906627,0.1559,1,True,0,False,25,1000,ok
+12,1,BruteForce2n,-0.906627,0.0089,1,True,0,True,25,,ok
+12,1,EnumCardinality,-0.906627,0.0,1,True,0,True,25,,ok
+12,1,CBC-linearized,-0.906627,0.3684,1,True,0,True,25,,ok
+12,1,CBC-native,-0.906627,0.0384,1,True,0,True,25,,ok
+25,2,SA,-5.763723,0.3728,2,True,0,False,26,1000,ok
+25,2,EnumCardinality,-5.763723,0.0008,2,True,0,True,26,,ok
+25,2,CBC-linearized,-5.763723,0.9365,2,True,0,True,26,,ok
+25,2,CBC-native,-5.763723,0.4155,2,True,0,True,26,,ok

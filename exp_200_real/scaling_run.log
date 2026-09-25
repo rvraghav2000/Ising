@@ -1,0 +1,27 @@
+  Loaded 62945 contracts from kalshi_universe.csv
+
+=== n=12  K=3  excl_pairs=11  C(n,K)=220
+    (aux binaries: linearized=66, native=31; cap=60000)
+    SA               E=     -17.69716  t=    0.187s  sel=  3/3  viol=0  proved=False
+    BruteForce2n     E=     -17.69716  t=    0.010s  sel=  3/3  viol=0  proved=True
+    EnumCardinality  E=     -17.69716  t=    0.001s  sel=  3/3  viol=0  proved=True
+    CBC-linearized   E=     -17.69716  t=    0.324s  sel=  3/3  viol=0  proved=True
+    CBC-native       E=     -17.69716  t=    0.050s  sel=  3/3  viol=0  proved=True
+
+=== n=25  K=3  excl_pairs=11  C(n,K)=2.3e+03
+    (aux binaries: linearized=300, native=109; cap=60000)
+    SA               E=     -17.91114  t=    0.424s  sel=  3/3  viol=0  proved=False
+    EnumCardinality  E=     -17.91114  t=    0.007s  sel=  3/3  viol=0  proved=True
+    CBC-linearized   E=     -17.91114  t=    3.524s  sel=  3/3  viol=0  proved=True
+    CBC-native       E=     -17.91114  t=    0.048s  sel=  3/3  viol=0  proved=True
+
+=== n=49  K=3  excl_pairs=13  C(n,K)=1.84e+04
+    (aux binaries: linearized=1176, native=398; cap=60000)
+    SA               E=     -18.00159  t=    0.986s  sel=  3/3  viol=0  proved=False
+    EnumCardinality  E=     -18.00159  t=    0.061s  sel=  3/3  viol=0  proved=True
+    CBC-linearized   E=     -18.00159  t=   58.760s  sel=  3/3  viol=0  proved=True
+    CBC-native       E=     -18.00159  t=    0.117s  sel=  3/3  viol=0  proved=True
+
+=== n=99  K=5  excl_pairs=14  C(n,K)=7.15e+07
+    (aux binaries: linearized=4851, native=1454; cap=60000)
+    SA               E=     -49.90371  t=    2.612s  sel=  5/5  viol=0  proved=False

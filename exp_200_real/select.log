@@ -1,0 +1,25 @@
+  Loaded 62945 contracts from kalshi_universe.csv
+
+  wrote 200 contracts to contracts_200.csv
+  events            : 33
+  price range       : 0.02 - 0.96
+  total volume      : 299,321,744
+
+  by structure (covariance form implied):
+    disjoint        167 contracts   26 events
+    nested           31 contracts    6 events
+    unstructured      2 contracts    1 events
+
+  by category:
+     105  Sports
+      26  Elections
+      24  Financials
+      11  Crypto
+      10  Entertainment
+       9  Science and Technology
+       7  Politics
+       5  Economics
+       3  Companies
+
+  exclusive-event price sums: min=0.940 median=1.000 max=1.090
+

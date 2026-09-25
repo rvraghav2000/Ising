@@ -1,0 +1,25 @@
+
+=== ABLATION OVER FORECAST DRAWS ===
+  n=167  K=3  beta=0.15  exclusive pairs=511  portfolios=762,355  draws/mode=100  modes=['none', 'cap', 'match']
+  enumerated; 680,868 portfolios hold no exclusive pair
+  check lambda=0: QUBO [97, 100, 119]  fast [97, 100, 119]  E_qubo+gK^2=-0.099053  obj=-0.099053  OK
+  check lambda=1: QUBO [43, 100, 119]  fast [43, 100, 119]  E_qubo+gK^2=-0.089443  obj=-0.089443  OK
+
+  mode    draws   viol@0  var0/var1  edge0-edge1   paper draw
+  ----------------------------------------------------------------------
+  none      100     73%      0.296      -0.0169   violation
+  cap       100     96%      0.585      -0.0033   violation
+  match     100     86%      0.396      -0.0062   clean
+
+  most frequently violated events (all modes):
+      53  KXBALLONDOR-26
+      49  KXF1-26
+      34  CONTROLH-2026
+      31  SENATEMI-26
+      27  CONTROLS-2026
+      21  KXGOVCA-26
+      21  KXTAKEOVERACQWB-27JUN30
+      21  KXOSCARPIC-27
+
+  wrote ablation_many_b0.15.csv and ablation_many_b0.15_summary.csv
+

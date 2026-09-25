@@ -1,5 +1,11 @@
 # sensitivity_analysis.py - sweep beta to see how risk aversion changes portfolio
 
+# --- path bootstrap (added by repo reorganisation) ---
+import os as _os, sys as _sys
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+_sys.path.insert(0, _os.path.join(_HERE, '..', 'common'))
+# --- end path bootstrap ---
+
 import numpy as np
 import pandas as pd
 from quantum_portfolio_optimizer import (

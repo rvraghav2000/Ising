@@ -1,0 +1,9 @@
+  wrote fig_correlation.pdf and fig_correlation.png
+    events       32
+    pairs        496
+    vmax         0.4127
+    se           0.1078
+    raw_sd       0.121
+    shrunk_sd    0.0672
+    above_2se    30
+    categories   9

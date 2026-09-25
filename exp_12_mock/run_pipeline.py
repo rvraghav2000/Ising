@@ -1,5 +1,12 @@
 # run_pipeline.py - runs everything and saves output to a log file
 
+# --- path bootstrap (added by repo reorganisation) ---
+import os as _os, sys as _sys
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+_sys.path.insert(0, _os.path.join(_HERE, '..', 'common'))
+_sys.path.insert(0, _os.path.join(_HERE, '..', 'exp_12_real'))
+# --- end path bootstrap ---
+
 import sys
 import os
 from datetime import datetime

@@ -1,0 +1,115 @@
+  edges: 167 from edges_frozen.csv, 0 drawn fresh
+
+==============================================================================================================
+  200-CONTRACT BENCHMARK  |  empirical covariance  |  K=3
+==============================================================================================================
+  contracts=167  events=32  exclusivity pairs=511
+  beta=0.5  gamma=2.0  lambda=5.0  edge=+/-10% of price
+  min eigenvalue of Sigma: -1.36e-16
+  edge: mean=-0.0010 sd=0.0143 min=-0.0631 max=+0.0577
+
+==============================================================================================================
+  PART A: EXCLUSIVITY ABLATION
+==============================================================================================================
+   lambda       Edge   Variance   Risk-Adj  Viol  Budget  Portfolio
+--------------------------------------------------------------------------------------------------------------
+      0.0    +0.1163     0.1204    +0.0561     1    True  KXVENEZUELALEADER-26DEC31-NMAD, KXRATECUTCOUNT-26DEC ***
+      1.0    +0.1148     0.2172    +0.0062     0    True  KXFEDDECISION-26SEP-H26, KXVENEZUELALEADER-26DEC31-N
+      2.0    +0.1148     0.2172    +0.0062     0    True  KXFEDDECISION-26SEP-H26, KXVENEZUELALEADER-26DEC31-N
+      5.0    +0.1148     0.2172    +0.0062     0    True  KXFEDDECISION-26SEP-H26, KXVENEZUELALEADER-26DEC31-N
+     10.0    +0.1148     0.2172    +0.0062     0    True  KXFEDDECISION-26SEP-H26, KXVENEZUELALEADER-26DEC31-N
+     20.0    +0.1148     0.2172    +0.0062     0    True  KXFEDDECISION-26SEP-H26, KXVENEZUELALEADER-26DEC31-N
+--------------------------------------------------------------------------------------------------------------
+
+  KEY FINDING: at lambda=0 the optimiser selects 1 logically contradictory pair(s), and does so at variance 0.1204 --
+  lower than every valid portfolio (best valid variance 0.2172). The contradiction is selected as a hedge, not for edge.
+==============================================================================================================
+
+==============================================================================================================
+  PART B: SOLVER BENCHMARKING
+==============================================================================================================
+  n=167  K=3  aux binaries for MILP encodings: linearized=13861, native=13861
+
+  [exact] enumerating C(167,3) = 762,355 feasible portfolios...
+          E=-0.006207  t=5.30s
+
+  [SA] simulated annealing (dwave-neal)...
+       t=36.95s
+
+  [SciPy] continuous relaxation + rounding...
+          t=3.64s
+
+  [PuLP+CBC (QUBO)] ...
+          t=301.83s
+
+  [PuLP+CBC (native)] ...
+          t=141.65s
+
+==============================================================================================================
+  Solver                       Energy        Gap      Edge       Var  #Sel  Budget  Viol   Time (s)
+--------------------------------------------------------------------------------------------------------------
+  Exact C(n,K)              -0.006207  +0.000000   +0.1148    0.2172     3    True     0       5.30
+  SA (Ising)                 0.003000  +0.009207   +0.0577    0.1213     3    True     0      36.95
+  SciPy relax+round         18.000000 +18.006207   +0.0000    0.0000     0   False     0       3.64
+  PuLP+CBC (QUBO)            0.018807  +0.025014   +0.0524    0.1425     3    True     0     301.83
+  PuLP+CBC (native)         -0.006207  +0.000000   +0.1148    0.2172     3    True     0     141.65
+--------------------------------------------------------------------------------------------------------------
+  energy includes gamma*K^2; gap is E - E* against the exact optimum over C(167,3)
+
+  SELECTED PORTFOLIOS:
+    Exact C(n,K)           KXFEDDECISION-26SEP-H26, KXVENEZUELALEADER-26DEC31-NMAD, KXRATECUTCOUNT-26DEC31-T0
+    SA (Ising)             KXNFLAFCCHAMP-27-TEN, KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-BWAL
+    SciPy relax+round      
+    PuLP+CBC (QUBO)        KXFEDDECISION-26SEP-H26, KXOSCARPIC-27-DIG, KXRATECUTCOUNT-26DEC31-T0
+    PuLP+CBC (native)      KXFEDDECISION-26SEP-H26, KXVENEZUELALEADER-26DEC31-NMAD, KXRATECUTCOUNT-26DEC31-T0
+==============================================================================================================
+
+==============================================================================================================
+  PART C: SA ROBUSTNESS TEST (20 independent runs)
+==============================================================================================================
+
+  Energy:  mean=-17.9998  std=0.0030  min=-18.0051  max=-17.9950
+  Budget satisfied:   20/20
+  Zero violations:    20/20
+  Avg time per run:   32.5888s
+  Unique portfolios:  20 / 20
+      1x  KXNFLNFCCHAMP-27-ATL, KXINXY-26DEC31H1600-B6700, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXFEDDECISION-26SEP-H26, KXINXY-26DEC31H1600-B6700, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXOSCARPIC-27-PRO, KXRATECUTCOUNT-26DEC31-T0, KXBTCMAXY-26DEC31-199999.99
+      1x  KXATP-26USO-MUS, KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-CELL
+      1x  KXINXY-26DEC31H1600-B6700, KXRATECUTCOUNT-26DEC31-T0, KXALIENS-26NOV
+      1x  KXFEDDECISION-26SEP-H26, KXOSCARPIC-27-AVEN, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXNBA-27-LAL, KXVENEZUELALEADER-26DEC31-NMAD, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXFEDDECISION-26SEP-H26, KXINXY-26DEC31H1600-B6300, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXVENEZUELALEADER-26DEC31-NMAD, KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-CELL
+      1x  KXNBA-27-HOU, KXVENEZUELALEADER-26DEC31-NMAD, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXMLBAL-26-SEA, KXVENEZUELALEADER-26DEC31-NMAD, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXWNBA-26-WSH, KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-BWAL
+      1x  KXVENEZUELALEADER-26DEC31-NMAD, KXWNBA-26-WSH, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXFEDDECISION-26SEP-H26, KXOSCARPIC-27-BEH, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXNFLAFCCHAMP-27-TEN, KXOSCARPIC-27-SOC, KXRATECUTCOUNT-26DEC31-T0
+      1x  KXVENEZUELALEADER-26DEC31-NMAD, KXRATECUTCOUNT-26DEC31-T0, KXBTCMAXY-26DEC31-199999.99
+      1x  KXNBA-27-HOU, KXRATECUTCOUNT-26DEC31-T0, KXALIENS-26NOV
+      1x  KXNBA-27-CLE, KXRATECUTCOUNT-26DEC31-T0, KXBTCMAXY-26DEC31-199999.99
+      1x  KXNBA-27-ORL, KXRATECUTCOUNT-26DEC31-T0, KXNASCARCUPSERIES-NCS26-BWAL
+      1x  KXATP-26USO-MUS, KXOSCARPIC-27-BEH, KXRATECUTCOUNT-26DEC31-T0
+==============================================================================================================
+  (energies incl. gamma*K^2)  best seed -0.005069  exact -0.006207  reached: False
+
+==============================================================================================================
+  PART D: RISK-AVERSION SWEEP (beta)
+==============================================================================================================
+    beta       Edge   Variance   Risk-Adj  Viol  Portfolio
+--------------------------------------------------------------------------------------------------------------
+    0.00    +0.1626     0.4979    +0.1626     0  KXFEDDECISION-26SEP-H25, KXVENEZUELALEADER-26DEC31-NMAD, K
+    0.40    +0.1155     0.2188    +0.0280     0  KXVENEZUELALEADER-26DEC31-NMAD, KXOSCARPIC-27-SOC, KXRATEC
+    0.80    +0.0588     0.1150    -0.0332     0  KXFEDDECISION-26SEP-H26, KXOSCARPIC-27-SOC, KXRATECUTCOUNT
+    1.20    +0.0044     0.0574    -0.0645     0  KXNFLNFCCHAMP-27-ATL, KXWNBA-26-WSH, KXNASCARCUPSERIES-NCS
+    1.60    +0.0044     0.0574    -0.0874     0  KXNFLNFCCHAMP-27-ATL, KXWNBA-26-WSH, KXNASCARCUPSERIES-NCS
+    2.00    +0.0044     0.0574    -0.1104     0  KXNFLNFCCHAMP-27-ATL, KXWNBA-26-WSH, KXNASCARCUPSERIES-NCS
+--------------------------------------------------------------------------------------------------------------
+==============================================================================================================
+
+  wrote ablation_200_K3.csv, benchmark_200_K3.csv, robustness_200_K3.csv, sensitivity_200_K3.csv
+==============================================================================================================
+

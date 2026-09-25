@@ -1,0 +1,2 @@
+mean_energy,std_energy,min_energy,max_energy,budget_rate,violation_free_rate,exact_energy,any_seed_reached_exact
+0.0001668227017432855,0.002976848108387458,-0.005068997213736992,0.00501586965049583,1.0,1.0,-0.006207,False

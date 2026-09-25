@@ -1,0 +1,489 @@
+\documentclass[aps, reprint, prl, twocolumn, superscriptaddress,amsmath,amssymb,noeprint]{revtex4-2}
+% \documentclass{article}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xfrac}
+\usepackage{dsfont}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{bbold}
+\usepackage[normalem]{ulem}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{color}
+\usepackage{xcolor}
+
+
+\usepackage{pdfpages}
+\usepackage{pgffor}
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{1em}
+
+\makeatletter
+\AtBeginDocument{\let\LS@rot\@undefined}
+\makeatother
+
+
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue]{hyperref}
+\usepackage{siunitx}
+
+\newcommand{\ColumbiaEng}{Fu Foundation school of Engineering and Applied Science, Columbia University, New York city, NY}
+
+\frenchspacing
+
+\begin{document}
+
+
+\title{Quantum Portfolio Optimization for Prediction Markets}
+
+ 
+\author{Adrian Zhang}
+\affiliation{\ColumbiaEng}
+
+\author{Raghav Vishveshwara}
+\affiliation{\ColumbiaEng}
+\begin{abstract}
+
+We present a quantum-inspired portfolio optimization framework that maps prediction market contracts to a Quadratic Unconstrained Binary Optimization (QUBO) problem. Because prediction market contracts resolve to binary outcomes, they offer a native mapping to Ising-model optimization compared to traditional continuous portfolios. Our Hamiltonian was built to minimize variance risk and maximize edge while enforcing budget constraints as well as our novel mutual exclusivity penalty. We evaluate our model using 12 live contracts from the Kalshi exchange. Using simulated annealing to find the ground state of our Ising Hamiltonian, we demonstrate that our approach successfully constructs provably optimal portfolios in 100\% of independent trials. An ablation study confirms that the mutual exclusivity penalty effectively prevents logically contradictory allocations. Benchmarking against classical methods reveals that continuous relaxation fails with a 44.4\% optimality gap, validating the necessity of a native binary formulation. This work is a proof of concept that establishes prediction markets as a practical and robust use case for quantum-inspired Ising optimization.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Portfolio selection is the central optimization problem of quantitative
+finance.  The mean--variance framework introduced by
+Markowitz~\cite{markowitz1952}, together with the equilibrium pricing
+theory of Sharpe~\cite{sharpe1964} and the analytic characterization of
+the efficient frontier by Merton~\cite{merton1972}, expresses the
+allocation decision as the optimization of a quadratic objective that
+balances expected return against covariance risk.  That quadratic
+structure is precisely what makes portfolio selection a natural target
+for Ising-model optimization: minimizing a quadratic cost function over
+discrete variables is the same computational task as locating the ground
+state of a spin Hamiltonian, the problem solved by quantum
+annealing~\cite{kadowaki1998,johnson2011} and by variational schemes such
+as the Quantum Approximate Optimization Algorithm~\cite{farhi2014}.
+
+The unconstrained mean--variance problem admits a closed-form continuous
+solution.  Real trading mandates, however, impose combinatorial
+structure: a cap on the number of distinct positions, minimum lot sizes,
+and logical restrictions on which assets may be held simultaneously.
+Once a cardinality constraint is imposed, the problem becomes a
+mixed-integer quadratic program and is
+NP-hard~\cite{bienstock1996,bertsimas2009}.  This is the standard
+motivation for recasting portfolio selection as a Quadratic Unconstrained
+Binary Optimization (QUBO) problem, in which constraints are absorbed
+into the objective as quadratic penalty
+terms~\cite{lucas2014,glover2019}, and the resulting matrix is mapped to
+an Ising Hamiltonian.
+
+\textbf{Combinatorial scaling.}---The practical case for this mapping
+rests on how the feasible set grows.  An unconstrained binary portfolio
+over $n$ contracts admits $2^n$ configurations.  Imposing a fixed
+cardinality $K$ reduces this to $\binom{n}{K}$, which for constant $K$ is
+merely polynomial, $\mathcal{O}(n^K)$; exhaustive enumeration therefore
+remains viable at small fixed $K$ regardless of $n$.  Realistic mandates,
+however, scale the number of held positions with the size of the
+investable universe, $K = \lceil \rho n \rceil$ for a roughly constant
+participation ratio $\rho$.  The feasible set then grows as
+$\binom{n}{\rho n} \sim 2^{n H(\rho)}$, where $H$ is the binary entropy
+function---exponential in $n$ (Table~\ref{tab:scaling}).  At a
+representative $\rho = 0.05$, exhaustive search is already infeasible by
+$n \approx 200$, and the addition of pairwise exclusivity constraints
+leaves a constrained combinatorial problem for which no efficient exact
+algorithm is known.  Heuristic ground-state search is therefore not a
+convenience but a requirement at market scale.
+
+\begin{table}[b]
+\caption{\label{tab:scaling}Growth of the portfolio search space.  $K$ is
+set by a fixed participation ratio $\rho = 0.05$.  Exhaustive enumeration
+becomes infeasible between $n = 100$ and $n = 200$.}
+\begin{ruledtabular}
+\begin{tabular}{cccc}
+$n$ & $2^n$ & $K$ & $\binom{n}{K}$ \\
+\colrule
+12   & $4.1\times10^{3}$   & 1  & $1.2\times10^{1}$ \\
+50   & $1.1\times10^{15}$  & 3  & $2.0\times10^{4}$ \\
+100  & $1.3\times10^{30}$  & 5  & $7.5\times10^{7}$ \\
+200  & $1.6\times10^{60}$  & 10 & $2.2\times10^{16}$ \\
+500  & $3.3\times10^{150}$ & 25 & $1.0\times10^{42}$ \\
+1000 & $1.1\times10^{301}$ & 50 & $1.0\times10^{85}$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\textbf{Quantum and quantum-inspired portfolio optimization.}---A
+substantial literature now applies annealing and variational methods to
+financial allocation.  Rosenberg \textit{et al.}~\cite{rosenberg2016}
+solved the optimal trading trajectory problem on a quantum annealer;
+Mugel \textit{et al.}~\cite{mugel2022} performed dynamic portfolio
+optimization on real datasets using both quantum processors and
+quantum-inspired tensor networks; and broad surveys of the field are
+given by Or\'{u}s \textit{et al.}~\cite{orus2019} and Herman \textit{et
+al.}~\cite{herman2023}.
+
+A recurring obstacle in this body of work is that equities are
+continuously divisible while QUBO variables are binary.  Bridging the two
+requires a binary expansion: Lee \textit{et al.}~\cite{lee2024} introduce
+a granularity parameter so that several bits encode the fractional weight
+of a \emph{single} asset, inflating an $n$-asset problem by that factor.
+Beyond the size penalty, the coefficients that enforce the resulting
+equality constraints are notoriously sensitive, typically demanding Monte
+Carlo estimation or two-stage search to keep the annealer from returning
+infeasible solutions while preserving a navigable energy
+landscape~\cite{lee2024,verma2022}.  The discretization is, in the words
+of the field's own reviews, ``artificial''~\cite{herman2023}: an encoding
+artifact rather than a property of the instrument, which makes a genuine
+structural advantage over classical continuous solvers difficult to
+demonstrate.
+
+\textbf{Prediction markets.}---Prediction markets are exchanges on which
+contracts pay a fixed amount contingent on a verifiable event, so that
+the traded price is interpretable as a market-aggregated
+probability~\cite{wolfers2004,arrow2008}.  Position sizing on such
+contracts is classically treated through the Kelly
+criterion~\cite{kelly1956,thorp2006}, which maximizes expected log wealth
+for an individual bet but does not by itself address discrete selection
+under a portfolio-wide capacity limit.  Logical relationships among
+contingent claims have been studied in the design of combinatorial
+prediction markets~\cite{hanson2003,chen2007}, but there the
+\emph{market maker} enforces coherence across a combinatorial outcome
+space.  On exchanges such as Kalshi~\cite{kalshi}, contracts within an
+event are listed and priced separately and no such coherence is imposed,
+so avoiding logically contradictory holdings becomes the responsibility
+of the \emph{trader's} allocation layer.
+
+To the best of our knowledge, no prior work has applied quantum-inspired
+portfolio optimization to prediction markets.  These instruments are
+natively binary---an event occurs or it does not, and the investor either
+holds the contract or does not---which removes the need for
+continuous-to-binary expansion entirely, eliminates the granularity
+parameter, and lets the QUBO formulation match the underlying instrument
+exactly rather than approximate it.
+
+\textbf{This work.}---We apply this mapping to live market data from the
+Kalshi prediction market; we formally designate the resulting algorithm
+the Prediction Market Portfolio for Highly Efficient Trading (PMPHET)
+framework.  We construct the covariance structure and expected edges and
+first evaluate the portfolio without exclusivity constraints.  Having
+shown that this predictably generates logically invalid portfolios, we
+introduce exclusivity penalties into the optimization.  We then benchmark
+our simulated annealing approach against classical solvers.  The
+exclusivity constraint is, to our knowledge, new to portfolio
+optimization: in equity portfolios two assets are never logically
+incompatible, so no formulation in the Markowitz lineage has required
+one.  We show that in its absence a variance-minimizing optimizer
+actively seeks out logically impossible joint outcomes, because an
+impossible pair presents as a perfect hedge.  By establishing these
+methods classically, we provide a practical foundation for scaling to
+larger portfolios and, ultimately, to execution on quantum annealing
+hardware.
+
+\textbf{Scope of limitations.}---We emphasize that this framework is
+presented as a localized, small-scale proof of concept.  By evaluating
+our model within a controlled universe of 12 live contracts, we isolate
+the structural mechanics of the QUBO mapping and the exclusivity penalty
+without the compounding computational overhead inherent to massive-scale
+portfolios.  This baseline verification is an essential prerequisite
+before addressing the optimization challenges of larger market dynamics
+or executing on physical quantum hardware.
+
+\section{Model}\subsection{Problem setup}
+
+Consider $n$ binary prediction contracts with market-implied probabilities
+$p_i$. To simulate an external forecasting advantage, we generate model-estimated probabilities $\hat{p}_i$ by injecting uniformly distributed noise bounded between $\pm 8\%$, such that $\hat{p}_i = \max(0.01, \min(0.99, p_i + \epsilon_i))$ where $\epsilon_i \sim U(-0.08, 0.08)$. The \emph{edge} on
+contract~$i$ is $e_i = \hat{p}_i - p_i$.  We seek to select exactly $K$
+contracts to maximize total edge subject to portfolio variance risk and
+logical consistency constraints.
+
+Each contract $i$ is a Bernoulli random variable with
+$\text{Var}(X_i) = p_i(1-p_i)$.  For contracts within the same event
+(e.g., ``CPI $> 0.4\%$'' and ``CPI $> 0.6\%$''), the covariance follows
+from nested conditioning:
+\begin{equation}
+  \text{Cov}(X_i, X_j) = \min(p_i, p_j) - p_i p_j,
+  \label{eq:nested_cov}
+\end{equation}
+since both settling YES requires the harder threshold to be met.
+Cross-category covariances are set from macroeconomic domain knowledge
+(Table~\ref{tab:correlations}).
+
+\begin{table}[b]
+\caption{\label{tab:correlations}Cross-category correlation structure.}
+\begin{ruledtabular}
+\begin{tabular}{lcc}
+Category pair & $\rho$ & Rationale \\
+\colrule
+CPI $\leftrightarrow$ PPI  & $+0.6$ & Input cost pass-through \\
+CPI $\leftrightarrow$ GDP  & $-0.3$ & Inflation--growth tradeoff \\
+PPI $\leftrightarrow$ GDP  & $-0.2$ & Cost pressure on output \\
+Weather $\leftrightarrow$ any & $0.0$ & Independent \\
+Same category (diff.\ event) & $+0.2$ & Macro regime link \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\subsection{QUBO formulation}
+
+The overall objective is to find a binary portfolio vector $\mathbf{x} \in \{0,1\}^n$ that minimizes the following combined cost function:
+\begin{equation}
+\begin{split}
+  \min_{\mathbf{x}} \bigg[ &-\sum_{i} e_i x_i + \beta \sum_{i,j} \Sigma_{ij} x_i x_j \\
+  &+ \gamma \left( \sum_i x_i - K \right)^2 + \lambda \sum_{(i,j) \in \mathcal{E}} x_i x_j \bigg].
+\end{split}
+  \label{eq:objective}
+\end{equation}
+
+This cost function maps directly into the standard QUBO form, $\min_{\mathbf{x}} \mathbf{x}^\top Q \, \mathbf{x}$, where the terms are encoded into the upper-triangular matrix $Q$ as follows:
+
+\textit{(i) Edge maximization.}---Reward selecting high-edge contracts:
+\begin{equation}
+  Q_{ii} \;\leftarrow\; Q_{ii} - e_i.
+\end{equation}
+
+\textit{(ii) Variance penalty.}---Penalize portfolio risk:
+\begin{equation}
+  Q_{ii} \leftarrow Q_{ii} + \beta\,\Sigma_{ii}, \quad
+  Q_{ij} \leftarrow Q_{ij} + 2\beta\,\Sigma_{ij} \;\; (i<j).
+\end{equation}
+
+\textit{(iii) Budget constraint.}---Enforce $\sum_i x_i = K$ via a
+quadratic penalty $\gamma(\sum_i x_i - K)^2$. Since $x_i^2 = x_i$ for binary variables, expanding this penalty maps the linear components to the diagonal and the interaction components to the off-diagonal:
+\begin{equation}
+  Q_{ii} \leftarrow Q_{ii} + \gamma(1-2K), \quad
+  Q_{ij} \leftarrow Q_{ij} + 2\gamma \;\; (i<j).
+\end{equation}
+
+\textit{(iv) Exclusivity constraint.}---For mutually exclusive pairs
+$(i,j) \in \mathcal{E}$:
+\begin{equation}
+  Q_{ij} \leftarrow Q_{ij} + \lambda.
+  \label{eq:exclusivity}
+\end{equation}
+By placing a large penalty $\lambda$ on the off-diagonal, we ensure that the state $x_i = 1$ and $x_j = 1$ becomes energetically highly unfavorable, preventing the solver from selecting contradictory events.
+
+The resulting $Q$ is mapped to an Ising Hamiltonian
+$H = \sum_i h_i \sigma_i^z + \sum_{i<j} J_{ij}\sigma_i^z\sigma_j^z$
+via the substitution $x_i = (1+\sigma_i^z)/2$.  The ground state of $H$
+corresponds to the optimal portfolio, which we locate by simulated
+annealing~\cite{kirkpatrick1983}.
+\subsection{Parameters}
+
+We use $\beta = 0.5$ (risk aversion), $\gamma = 2.0$ (budget penalty),
+$\lambda = 5.0$ (exclusivity penalty), and $K = 3$ (portfolio size).
+These values were validated via sensitivity analysis.
+
+\section{Data}
+We construct a universe of $n = 12$ contracts from the Kalshi exchange~\cite{kalshi}
+using its public REST API.
+The contracts span four categories: U.S.\ Consumer Price Index (CPI),
+Gross Domestic Product (GDP), Producer Price Index (PPI), and New York City
+high temperature---providing a mix of macroeconomic and non-financial
+events (Table~\ref{tab:contracts}).
+
+
+
+\begin{table}[H]
+\caption{\label{tab:contracts}Selected Kalshi contracts with live market
+prices (May 7, 2026).  Contracts sharing an event ticker are structurally
+related; those marked with $\mathcal{E}$ form exclusivity pairs.}
+\begin{ruledtabular}
+\begin{tabular}{llcc}
+Ticker & Category & $p_i$ & $e_i$ \\
+\colrule
+KXCPI-T0.6       & CPI & 0.20 & $-0.020$ \\
+KXCPI-T0.4       & CPI & 0.61 & $+0.072$ \\
+KXCPI-T$-$0.2    & CPI & 0.99 & $+0.000$ \\
+KXGDP-T2.5       & GDP & 0.35 & $+0.016$ \\
+KXGDP-T1.0       & GDP & 0.81 & $-0.055$ \\
+KXHIGHNY-T71$^{\mathcal{E}}$  & Weather & 0.01 & $+0.000$ \\
+KXHIGHNY-T64$^{\mathcal{E}}$  & Weather & 0.37 & $-0.071$ \\
+KXHIGHNY-B64.5$^{\mathcal{E}}$& Weather & 0.43 & $+0.059$ \\
+KXPPI-T5.2$^{\mathcal{E}}$    & PPI & 0.01 & $+0.016$ \\
+KXPPI-T4.6$^{\mathcal{E}}$    & PPI & 0.48 & $+0.033$ \\
+KXPPI-T4.2       & PPI & 0.56 & $-0.077$ \\
+KXCPI-T$-$0.3    & CPI & 0.99 & $+0.000$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+Exclusivity pairs are identified automatically by examining the market probability distribution within a single Kalshi event. If the combined probability (YES-price sum) of two contracts within the same event is less than 0.5, both represent unlikely tail-end outcomes. We flag these pairs as mutually exclusive, because allocating limited portfolio capacity to simultaneously bet on opposing or redundant tail risks is highly inefficient and harms portfolio diversification.
+
+
+\section{Results}
+
+\subsection{The Necessity of the Exclusivity Penalty}
+
+To demonstrate the necessity of the exclusivity penalty [Eq.~\eqref{eq:exclusivity}], we ran an ablation study comparing portfolios optimized with $\lambda = 0$ (no constraint) versus $\lambda > 0$ on synthetic contracts that include explicitly contradictory pairs (``Fed hikes $\geq 50$\,bps'' and ``Fed cuts $\geq 25$\,bps'').
+
+As shown in Table~\ref{tab:ablation}, at $\lambda = 0$, the optimizer selects both contradictory contracts. Notably, it does not do this simply to maximize expected edge; it does so because the negative covariance between these two outcomes creates a ``false hedge,'' artificially driving the portfolio variance down to $0.335$. Introducing a penalty ($\lambda \ge 1$) immediately corrects this. The optimizer sacrifices a fraction of this artificial variance reduction to ensure a logically valid portfolio, proving that the penalty is required to prevent the mathematical exploitation of physically impossible hedges.
+
+\begin{table}[H]
+\caption{\label{tab:ablation}Exclusivity ablation on synthetic data.}
+\begin{ruledtabular}
+\begin{tabular}{ccccc}
+$\lambda$ & Edge & Variance & Violations & Portfolio \\
+\colrule
+0   & $+0.115$ & 0.335 & \textbf{1} & HIKE, \textbf{CUT}, HRCN \\
+1   & $+0.129$ & 0.512 & 0 & HIKE, SP500, HRCN \\
+5   & $+0.129$ & 0.512 & 0 & HIKE, SP500, HRCN \\
+10  & $+0.129$ & 0.512 & 0 & HIKE, SP500, HRCN \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\subsection{Benchmarking Simulated Annealing}
+
+We benchmarked Simulated Annealing (SA) against four classical baselines on the real Kalshi data (Table~\ref{tab:benchmark}).
+
+\begin{table}[H]
+\caption{\label{tab:benchmark}Solver comparison on 12 live Kalshi contracts.
+Energy is the QUBO objective; lower is better.  Gap is relative to the
+provably optimal brute-force solution.}
+\begin{ruledtabular}
+\begin{tabular}{lcccr}
+Solver & Energy & Gap & Budget & Time (s) \\
+\colrule
+Brute-force (exact)   & $-17.978$ & ---      & $\checkmark$ & 0.03 \\
+SA (Ising, 5000 reads) & $-17.978$ & 0.00\%  & $\checkmark$ & 1.88 \\
+PuLP+CBC (QUBO)       & $-17.978$ & 0.00\%   & $\checkmark$ & 0.84 \\
+PuLP+CBC (native)     & $-17.978$ & 0.00\%   & $\checkmark$ & 0.06 \\
+SciPy relax+round     & $-9.989$  & 44.4\%   & $\times$      & 0.91 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+SA recovers the exact global optimum, matching both the brute-force enumeration and the MILP solver (PuLP+CBC). While brute-force is faster for a system of $n=12$ contracts, brute-force enumeration scales exponentially $\mathcal{O}(2^n)$. This computationally tractable 12-qubit system serves as a proof of concept, validating the Hamiltonian mapping and parameter tuning before scaling SA to real-world prediction markets with thousands of contracts.
+
+Conversely, the continuous relaxation approach (SciPy L-BFGS-B with rounding) fails to produce a feasible portfolio. It exhibits a 44.4\% optimality gap and violates the budget constraint by selecting only 1 of the required $K=3$ contracts. This confirms that the natively binary structure of prediction contracts makes continuous relaxation heuristic methods inadequate for this constrained combinatorial problem.
+
+\subsection{Robustness and Risk Aversion}
+
+Over 20 independent SA trials with distinct random seeds, the optimizer converged to the identical global optimum every time, with 100\% budget satisfaction and zero exclusivity violations. 
+
+Furthermore, sweeping the risk-aversion parameter $\beta$ demonstrates that the optimizer makes rational financial decisions (Table~\ref{tab:sensitivity}). When $\beta = 0$, the optimizer aggressively chases edge, picking medium-probability contracts (prices near $0.5$) that have high Bernoulli variance. As risk aversion increases, its behavior perfectly mirrors Modern Portfolio Theory: it trades away expected edge to minimize risk. By $\beta \ge 0.4$, the portfolio has already fully stabilized into extreme tail-risk events (prices of $0.01$ and $0.99$), because these ``safe-haven'' certainties and long-shots offer near-zero Bernoulli variance.
+
+\begin{table}[h!]
+\caption{\label{tab:sensitivity}Sensitivity analysis of risk aversion parameter $\beta$. As risk penalty increases, the optimizer sacrifices expected edge to transition into low-variance tail events.}
+\begin{ruledtabular}
+\begin{tabular}{ccl}
+$\beta$ & Edge & Selected Portfolio \\
+\colrule
+0.0 & $+0.164$ & KXCPI-T0.4, KXHIGHNY-B64.5, KXPPI-T4.6 \\
+0.4 & $+0.016$ & KXCPI-T$-$0.2, KXHIGHNY-T71, KXPPI-T5.2 \\
+0.8 & $+0.016$ & KXCPI-T$-$0.3, KXHIGHNY-T71, KXPPI-T5.2 \\
+1.2 & $+0.016$ & KXCPI-T$-$0.2, KXHIGHNY-T71, KXPPI-T5.2 \\
+1.6 & $+0.016$ & KXCPI-T$-$0.2, KXHIGHNY-T71, KXPPI-T5.2 \\
+2.0 & $+0.016$ & KXCPI-T$-$0.2, KXHIGHNY-T71, KXPPI-T5.2 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+
+
+
+
+\section{Conclusion}
+
+
+In this study, we introduced a quantum-inspired portfolio optimization framework natively tailored for prediction markets. Unlike traditional equity portfolios that require cumbersome continuous-to-binary discretization, prediction contracts inherently align with the binary constraints of Quadratic Unconstrained Binary Optimization (QUBO). This native mapping completely eliminates the need for artificial granularity parameters, reducing computational overhead and allowing for an exact representation of the investment decision space.
+
+Our formulation successfully balances expected edge against Bernoulli variance while strictly enforcing portfolio capacity. Crucially, we demonstrated that without our novel exclusivity penalty, mathematical optimizers exploit the negative covariance of logically contradictory events to artificially suppress portfolio variance, creating impossible ``false hedges.'' Applying the exclusivity penalty effectively prevents this structural loophole.
+
+Benchmarking our approach on live Kalshi market data highlighted the severe limitations of classical, continuous heuristics, which suffered a 44.4\% optimality gap and failed to produce feasible, budget-compliant portfolios. In contrast, Simulated Annealing (SA) reliably recovered the exact global optimum. Furthermore, sweeping the risk-aversion parameter proved that the model organically mirrors Modern Portfolio Theory, rationally trading expected edge to secure near-zero variance in extreme tail-risk events. 
+
+While exact enumeration is trivial for a 12-contract model, brute-force approaches scale exponentially ($\mathcal{O}(2^n)$) and quickly become intractable for real-world exchanges. By validating the Hamiltonian mapping and parameter tuning on a computationally accessible scale, this work establishes a robust proof-of-concept for applying Simulated Annealing, and eventually physical Quantum Annealing hardware, to large-scale, highly constrained prediction markets.
+
+
+\section*{Acknowledgments}
+The authors fondly dedicate the PMPHET acronym to their cats: Puma, Poppy, Hershey, Elliot, and Tiger, whose quiet support was foundational to the completion of this work.
+
+\begin{thebibliography}{30}
+
+\bibitem{markowitz1952}
+H.~Markowitz, \emph{J.\ Finance} \textbf{7}, 77 (1952).
+
+\bibitem{sharpe1964}
+W.~F.~Sharpe, \emph{J.\ Finance} \textbf{19}, 425 (1964).
+
+\bibitem{merton1972}
+R.~C.~Merton, \emph{J.\ Financial Quant.\ Anal.} \textbf{7}, 1851 (1972).
+
+\bibitem{kadowaki1998}
+T.~Kadowaki and H.~Nishimori, \emph{Phys.\ Rev.\ E} \textbf{58}, 5355 (1998).
+
+\bibitem{johnson2011}
+M.~W.~Johnson \emph{et al.}, \emph{Nature} \textbf{473}, 194 (2011).
+
+\bibitem{farhi2014}
+E.~Farhi, J.~Goldstone, and S.~Gutmann, \emph{A Quantum Approximate
+Optimization Algorithm}, arXiv:1411.4028 (2014).
+
+\bibitem{bienstock1996}
+D.~Bienstock, \emph{Math.\ Program.} \textbf{74}, 121 (1996).
+
+\bibitem{bertsimas2009}
+D.~Bertsimas and R.~Shioda, \emph{Comput.\ Optim.\ Appl.} \textbf{43}, 1 (2009).
+
+\bibitem{lucas2014}
+A.~Lucas, \emph{Front.\ Phys.} \textbf{2}, 5 (2014).
+
+\bibitem{glover2019}
+F.~Glover, G.~Kochenberger, and Y.~Du, \emph{4OR} \textbf{17}, 335 (2019).
+
+
+\bibitem{rosenberg2016}
+G.~Rosenberg \emph{et al.}, \emph{IEEE J.\ Sel.\ Top.\ Signal Process.}
+\textbf{10}, 1053 (2016).
+
+\bibitem{mugel2022}
+S.~Mugel \emph{et al.}, \emph{Phys.\ Rev.\ Research} \textbf{4}, 013006 (2022).
+
+\bibitem{orus2019}
+R.~Or\'{u}s, S.~Mugel, and E.~Lizaso, \emph{Rev.\ Phys.} \textbf{4}, 100028
+(2019).
+
+\bibitem{herman2023}
+D.~Herman \emph{et al.}, \emph{Nat.\ Rev.\ Phys.} \textbf{5}, 450 (2023).
+
+\bibitem{lee2024}
+Lee \textit{et al.}, \emph{Quantum-Inspired Portfolio Optimization In The QUBO
+Framework}, arXiv:2410.05932 (2024).
+
+\bibitem{verma2022}
+A.~Verma and M.~Lewis, \emph{Discrete Optim.} \textbf{44}, 100594 (2022).
+
+\bibitem{wolfers2004}
+J.~Wolfers and E.~Zitzewitz, \emph{J.\ Econ.\ Perspect.} \textbf{18}, 107
+(2004).
+
+\bibitem{arrow2008}
+K.~J.~Arrow \emph{et al.}, \emph{Science} \textbf{320}, 877 (2008).
+
+\bibitem{kelly1956}
+J.~L.~Kelly~Jr., \emph{Bell Syst.\ Tech.\ J.} \textbf{35}, 917 (1956).
+
+\bibitem{thorp2006}
+E.~O.~Thorp, in \emph{Handbook of Asset and Liability Management},
+Vol.~1 (Elsevier, Amsterdam, 2006), p.~385.
+
+\bibitem{hanson2003}
+R.~Hanson, \emph{Inf.\ Syst.\ Front.} \textbf{5}, 107 (2003).
+
+\bibitem{chen2007}
+Y.~Chen and D.~M.~Pennock, in \emph{Proceedings of the 23rd Conference on
+Uncertainty in Artificial Intelligence (UAI)} (2007), p.~49.
+
+\bibitem{kalshi}
+Kalshi Exchange, \url{https://kalshi.com} (2026).
+
+
+\bibitem{kirkpatrick1983}
+S.~Kirkpatrick, C.~D.~Gelatt, and M.~P.~Vecchi, \emph{Science} \textbf{220},
+671 (1983).
+
+\end{thebibliography}
+\end{document}

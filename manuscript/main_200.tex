@@ -1,0 +1,798 @@
+\documentclass[aps, reprint, prl, twocolumn, superscriptaddress,amsmath,amssymb,noeprint]{revtex4-2}
+% \documentclass{article}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xfrac}
+\usepackage{dsfont}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{bbold}
+\usepackage[normalem]{ulem}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{color}
+\usepackage{xcolor}
+
+
+\usepackage{pdfpages}
+\usepackage{pgffor}
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{1em}
+
+\makeatletter
+\AtBeginDocument{\let\LS@rot\@undefined}
+\makeatother
+
+
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue]{hyperref}
+\usepackage{siunitx}
+
+\newcommand{\ColumbiaEng}{Fu Foundation school of Engineering and Applied Science, Columbia University, New York city, NY}
+
+\frenchspacing
+
+\begin{document}
+
+
+\title{Quantum Portfolio Optimization for Prediction Markets}
+
+ 
+\author{Adrian Zhang}
+\affiliation{\ColumbiaEng}
+
+\author{Raghav Vishveshwara}
+\affiliation{\ColumbiaEng}
+\begin{abstract}
+
+We present a portfolio optimization framework that maps prediction market contracts to a Quadratic Unconstrained Binary Optimization (QUBO) problem and hence to an Ising Hamiltonian. Because prediction market contracts resolve to binary outcomes, the mapping is exact: unlike equity portfolios, no binary expansion or granularity parameter is required, and the number of spins equals the number of tradable contracts. Our Hamiltonian minimizes variance risk and maximizes edge while enforcing a budget constraint and a mutual exclusivity penalty. The exclusivity constraint has no analog in equity portfolio optimization, where two assets are never mutually exclusive. Holding several outcomes of one event is a bet on their union, a near-riskless synthetic position when those outcomes cover the event; we show that without the constraint a variance-penalized optimizer fills its limited positions with such combinations instead of directional views. We evaluate the framework on 167 live contracts spanning 32 events from the Kalshi exchange, using exclusivity relations declared by the exchange and verified against settlement rules, and a covariance matrix derived from the martingale property of prediction market prices and estimated from ninety days of price history. Across 100 synthetic forecasts made coherent with the event logic, the penalty-free optimum holds such a combination---for example both candidates in a two-way race---in every draw once risk aversion reaches $\beta = 0.25$, often accepting lower and, at high risk aversion, negative expected edge to do so; the exclusivity penalty removes every such holding. Exhaustive enumeration and a mixed-integer program with hard constraints recover the same ground state, validating the Hamiltonian mapping, while simulated annealing and a linearized-QUBO mixed-integer solver return feasible but suboptimal portfolios. This work establishes prediction markets as a setting in which the Ising formulation is native rather than imposed.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Portfolio selection is the central optimization problem of quantitative
+finance.  The mean--variance framework introduced by
+Markowitz~\cite{markowitz1952}, together with the equilibrium pricing
+theory of Sharpe~\cite{sharpe1964} and the analytic characterization of
+the efficient frontier by Merton~\cite{merton1972}, expresses the
+allocation decision as the optimization of a quadratic objective that
+balances expected return against covariance risk.  That quadratic
+structure is precisely what makes portfolio selection a natural target
+for Ising-model optimization: minimizing a quadratic cost function over
+discrete variables is the same computational task as locating the ground
+state of a spin Hamiltonian, the problem solved by quantum
+annealing~\cite{kadowaki1998,johnson2011} and by variational schemes such
+as the Quantum Approximate Optimization Algorithm~\cite{farhi2014}.
+
+The unconstrained mean--variance problem admits a closed-form continuous
+solution.  Real trading mandates, however, impose combinatorial
+structure: a cap on the number of distinct positions, minimum lot sizes,
+and logical restrictions on which assets may be held simultaneously.
+Once a cardinality constraint is imposed, the problem becomes a
+mixed-integer quadratic program and is
+NP-hard~\cite{bienstock1996,bertsimas2009}.  This is the standard
+motivation for recasting portfolio selection as a Quadratic Unconstrained
+Binary Optimization (QUBO) problem, in which constraints are absorbed
+into the objective as quadratic penalty
+terms~\cite{lucas2014,glover2019}, and the resulting matrix is mapped to
+an Ising Hamiltonian.
+
+\textbf{Combinatorial scaling.}---The practical case for this mapping
+rests on how the feasible set grows.  An unconstrained binary portfolio
+over $n$ contracts admits $2^n$ configurations.  Imposing a fixed
+cardinality $K$ reduces this to $\binom{n}{K}$, which for constant $K$ is
+merely polynomial, $\mathcal{O}(n^K)$; exhaustive enumeration therefore
+remains viable at small fixed $K$ regardless of $n$.  Realistic mandates,
+however, scale the number of held positions with the size of the
+investable universe, $K = \lceil \rho n \rceil$ for a roughly constant
+participation ratio $\rho$.  The feasible set then grows as
+$\binom{n}{\rho n} \sim 2^{n H(\rho)}$, where $H$ is the binary entropy
+function---exponential in $n$ (Table~\ref{tab:scaling}).  At a
+representative $\rho = 0.05$, exhaustive search is already infeasible by
+$n \approx 200$, and the addition of pairwise exclusivity constraints
+leaves a constrained combinatorial problem for which no efficient exact
+algorithm is known.  Heuristic ground-state search is therefore not a
+convenience but a requirement at market scale.
+
+\begin{table}[b]
+\caption{\label{tab:scaling}Growth of the portfolio search space.  $K$ is
+set by a fixed participation ratio $\rho = 0.05$.  Exhaustive enumeration
+becomes infeasible between $n = 100$ and $n = 200$.}
+\begin{ruledtabular}
+\begin{tabular}{cccc}
+$n$ & $2^n$ & $K$ & $\binom{n}{K}$ \\
+\colrule
+12   & $4.1\times10^{3}$   & 1  & $1.2\times10^{1}$ \\
+50   & $1.1\times10^{15}$  & 3  & $2.0\times10^{4}$ \\
+100  & $1.3\times10^{30}$  & 5  & $7.5\times10^{7}$ \\
+200  & $1.6\times10^{60}$  & 10 & $2.2\times10^{16}$ \\
+500  & $3.3\times10^{150}$ & 25 & $1.0\times10^{42}$ \\
+1000 & $1.1\times10^{301}$ & 50 & $9.5\times10^{84}$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\textbf{Quantum and quantum-inspired portfolio optimization.}---A
+substantial literature now applies annealing and variational methods to
+financial allocation.  Rosenberg \textit{et al.}~\cite{rosenberg2016}
+solved the optimal trading trajectory problem on a quantum annealer;
+Mugel \textit{et al.}~\cite{mugel2022} performed dynamic portfolio
+optimization on real datasets using both quantum processors and
+quantum-inspired tensor networks; and broad surveys of the field are
+given by Or\'{u}s \textit{et al.}~\cite{orus2019} and Herman \textit{et
+al.}~\cite{herman2023}.
+
+A recurring obstacle in this body of work is that equities are
+continuously divisible while QUBO variables are binary.  Bridging the two
+requires a binary expansion: Lee \textit{et al.}~\cite{lee2024} introduce
+a granularity parameter so that several bits encode the fractional weight
+of a \emph{single} asset, inflating an $n$-asset problem by that factor.
+Beyond the size penalty, the coefficients that enforce the resulting
+equality constraints are notoriously sensitive, typically demanding Monte
+Carlo estimation or two-stage search to keep the annealer from returning
+infeasible solutions while preserving a navigable energy
+landscape~\cite{lee2024,verma2022}.  The discretization is, in the words
+of the field's own reviews, ``artificial''~\cite{herman2023}: an encoding
+artifact rather than a property of the instrument, which makes a genuine
+structural advantage over classical continuous solvers difficult to
+demonstrate.
+
+\textbf{Prediction markets.}---Prediction markets are exchanges on which
+contracts pay a fixed amount contingent on a verifiable event, so that
+the traded price is interpretable as a market-aggregated
+probability~\cite{wolfers2004,arrow2008}.  Position sizing on such
+contracts is classically treated through the Kelly
+criterion~\cite{kelly1956,thorp2006}, which maximizes expected log wealth
+for an individual bet but does not by itself address discrete selection
+under a portfolio-wide capacity limit.  Logical relationships among
+contingent claims have been studied in the design of combinatorial
+prediction markets~\cite{hanson2003,chen2007}, but there the
+\emph{market maker} enforces coherence across a combinatorial outcome
+space.  On exchanges such as Kalshi~\cite{kalshi}, contracts within an
+event are listed and priced separately and no such coherence is imposed,
+so managing positions across mutually exclusive contracts becomes the responsibility
+of the \emph{trader's} allocation layer.
+
+To the best of our knowledge, no prior work has applied quantum-inspired
+portfolio optimization to prediction markets.  These instruments are
+natively binary---an event occurs or it does not, and the investor either
+holds the contract or does not---which removes the need for
+continuous-to-binary expansion entirely, eliminates the granularity
+parameter, and lets the QUBO formulation match the underlying instrument
+exactly rather than approximate it.
+
+\textbf{This work.}---We apply this mapping to live market data from the
+Kalshi prediction market; we formally designate the resulting algorithm
+the Prediction Market Portfolio for Highly Efficient Trading (PMPHET)
+framework.  We construct the covariance structure and expected edges and
+first evaluate the portfolio without exclusivity constraints.  We show
+that, once the objective penalizes risk, the optimizer fills its limited
+positions with combinations of mutually exclusive contracts: holding
+several sides of one event is a bet on their union, a near-riskless
+synthetic position that expresses no view.  We then introduce exclusivity
+penalties that remove such holdings, and benchmark our simulated
+annealing approach against classical solvers.  The penalty takes the
+standard quadratic form used to encode constraints in
+QUBOs~\cite{lucas2014}; the constraint itself is, to our knowledge, new
+to portfolio optimization: in equity portfolios two assets are never
+mutually exclusive, so no formulation in the Markowitz lineage has
+required one.  By establishing these
+methods classically, we provide a practical foundation for scaling to
+larger portfolios and, ultimately, to execution on quantum annealing
+hardware.
+
+\textbf{Scope of limitations.}---We emphasize that this framework is
+presented as a proof of concept.  We evaluate it on a universe of
+$n = 167$ live contracts with a portfolio size of $K = 3$, small enough
+that the feasible set can be enumerated exhaustively and every solver
+checked against a provably optimal reference.  This isolates the
+structural mechanics of the QUBO mapping and the exclusivity penalty.
+Establishing where exhaustive and mixed-integer methods cease to be
+viable as $K$ grows with $n$, and executing on physical quantum
+hardware, are left to subsequent work.
+
+\section{Model}\label{sec:model}\subsection{Problem setup}
+
+Consider $n$ binary prediction contracts with market-implied probabilities
+$p_i$. To simulate an external forecasting advantage, we generate model-estimated probabilities $\hat{p}_i$ as a relative perturbation of the market price, $\hat{p}_i = \mathrm{clip}\!\left[p_i(1+u_i),\,0.01,\,0.99\right]$ with $u_i \sim U(-0.10, 0.10)$, so that the perturbation scales with the price rather than displacing near-certain contracts by the same absolute amount as mid-priced ones. We emphasize that this edge is synthetic: the framework treats $\hat{p}_i$ as an input supplied by an external forecasting model, and no claim is made about forecasting performance. The \emph{edge} on
+contract~$i$ is $e_i = \hat{p}_i - p_i$.  We seek to select exactly $K$
+contracts to maximize total edge subject to portfolio variance risk and
+logical consistency constraints.
+
+Independent perturbations ignore the logic of an event.  Within a mutually
+exclusive event the forecast probabilities can sum to more than one, and along
+a nested ladder a harder threshold can receive a higher probability than an
+easier one.  Such a forecast is incoherent and manufactures edge that no
+forecaster could hold: in our universe the uncorrected draw assigns probability
+$1.06$ to the Federal Reserve cutting rates either zero times or once.  We
+therefore project the forecast onto the event logic.  Within each mutually
+exclusive event the forecast probabilities are rescaled proportionally
+wherever they sum to more than one, and along each nested ladder they are
+replaced by their isotonic (monotone) fit in the containment order.  As a
+stricter variant we also rescale each mutually exclusive event to the market's
+own total, so that no combination spanning an event can carry edge.  Unless
+stated otherwise, results use the first projection applied to one fixed draw
+of the $u_i$.  The projection removes most of the edge the uncorrected
+generator appeared to offer: the valid optimum's edge at $\beta = 0.5$ falls
+from $0.115$ to $0.005$.
+
+Each contract $i$ is a Bernoulli random variable with
+$\text{Var}(X_i) = p_i(1-p_i)$.  The covariance structure is assembled in
+three layers, only the last of which requires estimation.
+
+\textit{(i) Within an event, structure fixes the covariance exactly.}  When
+two contracts belong to the same event, their joint distribution is
+determined by the event's logic rather than by any correlation
+assumption.  For nested thresholds (e.g.\ ``CPI $>0.4\%$'' and ``CPI
+$>0.6\%$''), both settling YES requires the harder threshold to be met,
+so
+\begin{equation}
+  \text{Cov}(X_i, X_j) = \min(p_i, p_j) - p_i p_j .
+  \label{eq:nested_cov}
+\end{equation}
+When the event is mutually exclusive, at most one contract settles YES,
+$\mathbb{E}[X_iX_j]=0$, and
+\begin{equation}
+  \text{Cov}(X_i, X_j) = -\,p_i p_j .
+  \label{eq:disjoint_cov}
+\end{equation}
+For $p_i + p_j \le 1$, $-p_ip_j$ is the lower Fr\'{e}chet bound, the most
+negative covariance any two binary contracts at those prices can have.
+Holding several contracts of one exclusive event therefore offsets risk as
+strongly as their prices allow; when the held contracts cover the event, their
+combined payoff is identically one and its variance vanishes.  This is what
+makes exclusive combinations attractive to a variance-penalized objective
+(Sec.~\ref{sec:ablation}).
+
+\textit{(ii) Across events, the covariance is estimated from prices.}  A
+prediction market price is the market's running estimate of the outcome,
+$P^i_t = \mathbb{E}[X_i \mid \mathcal{F}_t]$ with $P^i_T = X_i$, where the
+expectation is taken under the market's pricing measure, and is
+therefore a bounded martingale.  Since $P^iP^j - [P^i,P^j]$ is itself a
+martingale, where $[\cdot,\cdot]$ denotes the realized quadratic
+covariation (which accommodates the jumps that prediction market prices
+exhibit, most sharply at settlement), taking expectations at settlement
+gives
+\begin{equation}
+  \text{Cov}(X_i, X_j) \;=\; \mathbb{E}\!\left[\,[P^i, P^j]_T\right],
+  \label{eq:covariation}
+\end{equation}
+so the covariance of the \emph{outcomes} equals the expected quadratic
+covariation of the \emph{price paths}.  Equation~\eqref{eq:covariation}
+is self-consistent on the diagonal: $\mathbb{E}\big[[P^i]_T\big] =
+p_i(1-p_i)$, recovering the Bernoulli variance.  Realized co-movement of
+quoted prices is therefore the natural quantity to measure.
+
+Because only part of $[0,T]$ is observed, we estimate realized
+\emph{correlation} over the observed window and rescale by the terminal
+Bernoulli standard deviation.  This assumes that the correlation of
+price increments is stable over each contract's life, and is an
+approximation: the contracts in our universe resolve on dates ranging
+from September 2026 to 2029, and part of the covariation accrues in the
+jump at settlement, which a window preceding resolution does not
+observe.  Contracts within one event are driven by a
+single underlying quantity and, in a mutually exclusive event, move in
+opposite directions; averaging their pairwise correlations against
+another event would cancel.  We therefore adopt a one-factor-per-event
+model: each event is summarized by a
+factor---the first principal component of its contracts' price
+increments---with a signed loading $\ell_i$ per contract, and correlation
+is estimated between factors.  For $i,j$ in distinct events $e(i),e(j)$,
+\begin{equation}
+  \Sigma_{ij} = \hat{\rho}_{\,e(i)e(j)}\,\ell_i \ell_j
+                \sqrt{p_i(1-p_i)\,p_j(1-p_j)} .
+\end{equation}
+This reduces the number of quantities to be estimated from $\binom{n}{2}$
+contract pairs to $\binom{E}{2}$ event pairs, with $E \ll n$.
+
+\textit{(iii) Shrinkage and positivity.}  With $T$ daily increments each
+correlation carries sampling variance $\approx (1-\rho^2)^2/(T-3)$.  With
+fewer than a hundred increments per contract and several hundred event
+pairs to estimate, much of the observed dispersion is noise, so we
+shrink toward a structural prior $F$ fixed in advance (same category
+$0.2$, cross category $0$),
+\begin{equation}
+  \hat{\Sigma} = (1-\delta)\,S + \delta F ,
+\end{equation}
+with $\delta$ set heuristically as the ratio of the average sampling
+variance to the observed variance of the estimates.  The Ledoit--Wolf
+intensity, which measures dispersion about the prior rather than about
+the sample mean, would assign the data more weight; we retain the more
+conservative choice.  Finally, assembling analytic blocks with
+estimated cross terms does not guarantee positive semidefiniteness, and a
+negative eigenvalue would correspond to a portfolio of negative
+variance---a direction the objective actively rewards, since it
+\emph{minimizes} $\beta\,\mathbf{x}^\top\Sigma\,\mathbf{x}$.  We therefore
+project onto the positive semidefinite cone by clipping negative
+eigenvalues and rescaling to restore the Bernoulli diagonal.  The
+rescaling perturbs every entry, including the analytic within-event
+blocks of (i), which after projection hold only approximately.
+Positive semidefiniteness is, moreover, necessary but not sufficient for
+binary outcomes: the covariance of two Bernoulli variables must also lie
+within the Fr\'{e}chet bounds $\max(0,p_i+p_j-1)-p_ip_j \le
+\text{Cov}(X_i,X_j) \le \min(p_i,p_j)-p_ip_j$, which the projected
+estimate does not enforce entrywise.
+
+\subsection{QUBO formulation}
+
+The overall objective is to find a binary portfolio vector $\mathbf{x} \in \{0,1\}^n$ that minimizes the following combined cost function:
+\begin{equation}
+\begin{split}
+  \min_{\mathbf{x}} \bigg[ &-\sum_{i} e_i x_i + \beta \sum_{i,j} \Sigma_{ij} x_i x_j \\
+  &+ \gamma \left( \sum_i x_i - K \right)^2 + \lambda \sum_{(i,j) \in \mathcal{E}} x_i x_j \bigg].
+\end{split}
+  \label{eq:objective}
+\end{equation}
+
+This cost function maps directly into the standard QUBO form, $\min_{\mathbf{x}} \mathbf{x}^\top Q \, \mathbf{x}$, up to the constant $\gamma K^2$ from expanding the budget penalty, which does not affect the minimizer.  The terms are encoded into the upper-triangular matrix $Q$ as follows:
+
+\textit{(i) Edge maximization.}---Reward selecting high-edge contracts:
+\begin{equation}
+  Q_{ii} \;\leftarrow\; Q_{ii} - e_i.
+\end{equation}
+
+\textit{(ii) Variance penalty.}---Penalize portfolio risk:
+\begin{equation}
+  Q_{ii} \leftarrow Q_{ii} + \beta\,\Sigma_{ii}, \quad
+  Q_{ij} \leftarrow Q_{ij} + 2\beta\,\Sigma_{ij} \;\; (i<j).
+\end{equation}
+
+\textit{(iii) Budget constraint.}---Enforce $\sum_i x_i = K$ via a
+quadratic penalty $\gamma(\sum_i x_i - K)^2$. Since $x_i^2 = x_i$ for binary variables, expanding this penalty maps the linear components to the diagonal and the interaction components to the off-diagonal:
+\begin{equation}
+  Q_{ii} \leftarrow Q_{ii} + \gamma(1-2K), \quad
+  Q_{ij} \leftarrow Q_{ij} + 2\gamma \;\; (i<j).
+\end{equation}
+
+\textit{(iv) Exclusivity constraint.}---For mutually exclusive pairs
+$(i,j) \in \mathcal{E}$:
+\begin{equation}
+  Q_{ij} \leftarrow Q_{ij} + \lambda.
+  \label{eq:exclusivity}
+\end{equation}
+By placing a large penalty $\lambda$ on the off-diagonal, we ensure that the state $x_i = 1$ and $x_j = 1$ becomes energetically highly unfavorable, preventing the solver from holding two outcomes of the same mutually exclusive event.
+
+The resulting $Q$ is mapped to an Ising Hamiltonian
+$H = \sum_i h_i \sigma_i^z + \sum_{i<j} J_{ij}\sigma_i^z\sigma_j^z$
+via the substitution $x_i = (1+\sigma_i^z)/2$.  The ground state of $H$
+corresponds to the optimal portfolio, which we locate by simulated
+annealing~\cite{kirkpatrick1983}.
+\subsection{Parameters}
+
+We use $\beta = 0.5$ (risk aversion), $\gamma = 2.0$ (budget penalty),
+$\lambda = 5.0$ (exclusivity penalty), and $K = 3$ (portfolio size).
+The exclusivity penalty $\lambda$ and risk aversion $\beta$ are swept in
+Sec.~\ref{sec:ablation}; $\gamma$ is fixed at a
+value large enough that every annealing and enumeration solution reported
+satisfies the budget constraint.  We fix $K=3$
+rather than following the participation-ratio rule of
+Table~\ref{tab:scaling} so that the feasible set $\binom{n}{K}$ remains
+small enough to enumerate exhaustively, which supplies a provably optimal
+reference against which every solver in Sec.~\ref{sec:benchmark} is
+measured.
+
+\section{Data}
+
+We construct our universe from open markets on the Kalshi
+exchange~\cite{kalshi}, retrieved through its public REST API on
+September 8, 2026.  Walking the first $8{,}000$ open events returned by the
+events endpoint yields $62{,}945$ contracts carrying a usable quote, grouped
+into $7{,}896$ events across nineteen categories.
+
+\textbf{Exclusivity is declared by the exchange.}  Kalshi annotates each event
+with a \texttt{mutually\_exclusive} flag, which is set for $2{,}785$ events
+covering $18{,}544$ contracts.  We take the set $\mathcal{E}$ from this
+flag rather than inferring it from prices.  This matters: a heuristic that
+infers exclusivity from ticker strings or from the sum of quoted prices will
+misclassify contracts whose direction is not encoded in the ticker---for
+instance a ``less than'' threshold listed alongside ``greater than'' thresholds
+in the same event---and will assign such a pair a positive covariance when the
+truth is Eq.~\eqref{eq:disjoint_cov}.  The flag is not exhaustive, however.
+Among our selected events, the market on Venezuela's head of state on
+December 31, 2026 is unflagged although at most one candidate can hold the
+office; we add it to $\mathcal{E}$ on the basis of its settlement rules.  Its
+quoted prices sum to $1.16$, outside the coherence tolerance applied below,
+but exclusivity is a property of the settlement logic rather than of the
+quotes.  Likewise, five unflagged events whose markets are cumulative
+deadlines (e.g.\ ``before January 1, 2027'' and ``before January 20, 2029'')
+or price thresholds without a strike in the ticker are classified as nested
+from their settlement rules.
+
+\textbf{Selection.}  Contracts are selected event by event rather than
+individually, because the structure carrying the covariance information lives at
+the event level.  We keep contracts with quotes in $[0.02, 0.98]$ and nonzero
+traded volume, retain events with two to fifteen such contracts, and rank
+events by traded volume so that price history exists for the estimation of
+Eq.~\eqref{eq:covariation}.  For mutually exclusive events we additionally
+require the quoted YES prices to sum to unity within $10\%$; roughly $40\%$ of
+flagged events fail this no-arbitrage check, typically because untraded
+contracts carry stale bid--ask midpoints, and such events carry no usable
+covariance structure.  Applying these filters and taking the $200$ most liquid
+contracts, then retaining those whose price history spans at least sixty of the
+ninety days, leaves $n = 167$ contracts across $32$ events.  Contracts dropped
+by these filters are removed from within their events; since
+Eqs.~\eqref{eq:nested_cov} and~\eqref{eq:disjoint_cov} hold pairwise, the
+analytic covariance of the contracts that remain is unaffected.
+
+\textbf{Structure.}  The resulting universe contains $26$ mutually exclusive
+events, generating $|\mathcal{E}| = 511$ exclusivity pairs, and six nested
+ladders governed by Eq.~\eqref{eq:nested_cov}; every event therefore has an
+analytic within-event form (Table~\ref{tab:contracts}).  The category
+composition is given in Table~\ref{tab:categories}.  Of
+the $\binom{167}{2} = 13{,}861$ off-diagonal covariance entries, $560$ are fixed
+by event structure and the remaining $13{,}301$ are estimated from
+$\binom{32}{2} = 496$ event-pair correlations.
+
+\textbf{Price history.}  We retrieve up to ninety daily candles per contract
+(June 11 to September 8, 2026) and align them on a common calendar, carrying the
+last price forward on days without a close, which gives $T = 89$ price
+increments.  Many contracts trade intermittently---the median contract's price
+moves on only $49$ of the $89$ days---so the effective sample is smaller than
+$T$.  The nominal sampling standard error on a correlation is
+$1/\sqrt{T-3} = 0.108$, against an observed dispersion of $0.121$ in
+the raw estimates: the data are consistent with only a small amount of genuine
+cross-event structure.  Stale prices also bias estimated correlations toward
+zero, so this comparison should be read as indicative.  The heuristic
+shrinkage weight of Sec.~\ref{sec:model} is $\delta = 0.771$, so the structural prior carries $77\%$ of the final estimate
+and the price history $23\%$.  Figure~\ref{fig:correlation} shows the raw and
+shrunk correlation matrices on a common scale.  The block structure visible
+after shrinkage reflects the same-category prior by construction; the
+departures from it---most prominently the pairing of the September Federal
+Reserve decision with the 2026 rate-cut-count market---are what the price
+history supports.
+
+\begin{figure*}[t]
+\includegraphics[width=\textwidth]{code/Ising/exp_200_real/fig_correlation.pdf}
+\caption{\label{fig:correlation}Cross-event correlations estimated from $T=89$
+daily price increments, shown on a common colour scale.  (a) raw estimates;
+(b) after shrinkage toward a same-category structural prior with $\delta=0.771$
+chosen from the ratio of sampling noise to observed dispersion.  Events are
+ordered by category and the unit diagonal is masked.  The block structure in (b)
+is the prior; departures from it are the contribution of the data.}
+\end{figure*}
+
+\begin{table}[b]
+\caption{\label{tab:contracts}Composition of the $167$-contract Kalshi universe
+($32$ events).  The structure class fixes the within-event covariance
+analytically, leaving only cross-event terms to be estimated.}
+\begin{ruledtabular}
+\begin{tabular}{lccc}
+Structure & Events & Contracts & Within-event covariance \\
+\colrule
+Mutually exclusive & 26 & 143 & $-p_i p_j$ \\
+Nested & 6 & 24 & $\min(p_i,p_j)-p_i p_j$ \\
+\colrule
+Total & 32 & 167 & \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\begin{table}[b]
+\caption{\label{tab:categories}Category composition of the $167$-contract
+universe.  Prices are Kalshi quotes on September 8, 2026 (last trade, else
+bid--ask midpoint).}
+\begin{ruledtabular}
+\begin{tabular}{lccc}
+Category & Events & Contracts & Price range \\
+\colrule
+Sports & 11 & 89 & 0.02--0.87 \\
+Elections & 9 & 23 & 0.02--0.96 \\
+Financials & 2 & 19 & 0.02--0.29 \\
+Entertainment & 1 & 10 & 0.02--0.49 \\
+Crypto & 2 & 8 & 0.02--0.24 \\
+Science and Technology & 2 & 7 & 0.02--0.22 \\
+Economics & 2 & 5 & 0.02--0.91 \\
+Politics & 2 & 4 & 0.04--0.19 \\
+Companies & 1 & 2 & 0.04--0.81 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\section{Results}
+
+\subsection{The Necessity of the Exclusivity Penalty}
+\label{sec:ablation}
+
+Holding several contracts from one mutually exclusive event is not a
+contradiction in itself: it is a bet that one of them occurs.  Its payoff is
+the indicator of their union, whose variance, by
+Eq.~\eqref{eq:disjoint_cov}, is $q(1-q)$ with $q = \sum_i p_i$---close to zero
+when the contracts cover most of the event's outcomes.  A set of exclusive
+contracts whose prices sum to one pays one dollar for a price of one dollar: a
+synthetic cash position that expresses no view and, at real bid and ask quotes,
+loses the spread.  Under a mandate to hold exactly $K$ positions such
+combinations occupy capacity intended for directional views, yet a
+variance-penalized objective finds them attractive.  The exclusivity penalty
+of Eq.~\eqref{eq:exclusivity} rules them out.
+
+To measure how much this matters we solve the model with the penalty off
+($\lambda = 0$) and on ($\lambda \ge 1$) across a range of risk aversion
+$\beta$, each case exactly over all $\binom{167}{3}$ portfolios.  Because the
+penalty term vanishes whenever no forbidden pair is held, every
+$\lambda \ge 1$ defines the same problem; we verified that
+$\lambda \in \{1, 2, 5, 10, 20\}$ return the same portfolio.  To separate the
+effect from a particular forecast, we repeat the comparison over $100$
+independent forecast draws, each projected onto the event logic as described
+in Sec.~\ref{sec:model}.
+
+The results are in Table~\ref{tab:ablation}.  At $\beta = 0$ the objective
+rewards edge alone and the penalty-free optimum essentially never holds an
+exclusive combination.  As soon as risk enters, it does: the share of forecast
+draws in which it holds one rises from $6\%$ at $\beta = 0.05$ to $96\%$ at
+$\beta = 0.15$ and to $100\%$ from $\beta = 0.25$ onward.  This is the same
+interval over which the valid optimum trades edge for variance, from an edge of
+$0.092$ at variance $0.60$ ($\beta = 0.1$) to an edge of $0.005$ at variance
+$0.059$ ($\beta = 0.2$), after which it settles on three contracts priced at
+the $0.02$ selection floor.  The stricter forecast projection and the
+uncorrected forecast show the same pattern (caption of
+Table~\ref{tab:ablation}).
+
+For the forecast draw used throughout, the penalty-free optimum at the
+working value $\beta = 0.5$ buys both candidates in the Michigan Senate race,
+priced at $0.63$ and $0.37$.  Its variance is a third of the valid optimum's,
+$0.020$ against $0.059$, while its edge is lower, $+0.0018$ against $+0.0051$:
+the optimizer gives up return to buy the riskless pair.  At $\beta = 2$ it
+holds all three outcomes of the Federal Reserve's September decision, whose
+prices sum to $1.02$, reaching a variance of $0.001$ at a \emph{negative}
+edge of $-0.020$; across the $100$ coherent draws the penalty-free optimum at
+$\beta = 2$ has negative edge in $85\%$ of cases.  It is paying to hold cash.
+With the penalty on, no exclusive combination is held in any draw at any
+$\beta$.
+
+The effect does not depend on the forecast being coherent.  The uncorrected
+generator of Sec.~\ref{sec:model} adds phantom edge on top of it: it assigns
+probability $1.06$ to the Federal Reserve cutting rates either zero times or
+once, and under that forecast the penalty-free optimum holds exactly that pair.
+Projecting the forecast onto the event logic removes the artifact but not the
+behaviour.  Neither has a counterpart in equity portfolio optimization, where
+two assets are never mutually exclusive and no formulation in the Markowitz
+lineage has had cause to forbid a pair.  Both arise specifically because
+prediction market contracts are event-contingent claims.
+
+\begin{table*}[t]
+\caption{\label{tab:ablation}Exclusivity ablation across risk aversion on
+$167$ live Kalshi contracts with $K = 3$, each entry solved exactly over all
+$\binom{167}{3}$ portfolios.  Penalty on: $\lambda \ge 1$ (all of
+$\lambda \in \{1,2,5,10,20\}$ give the same portfolio).  Penalty off:
+$\lambda = 0$.  Edge and variance are for the forecast draw used throughout,
+projected onto the event logic (Sec.~\ref{sec:model}).  The last column is the
+share of $100$ independent projected forecast draws whose penalty-free optimum
+holds a mutually exclusive combination; with the penalty on the share is zero
+at every $\beta$.  Under the stricter projection that matches the market's
+event totals the shares are $0, 2, 12, 86, 99, 100, 100, 100, 100\%$; under the
+uncorrected independent-noise forecast they are
+$3, 23, 52, 73, 84, 91, 100, 100, 100\%$.}
+\begin{ruledtabular}
+\begin{tabular}{ccccccc}
+ & \multicolumn{2}{c}{Penalty on} & \multicolumn{3}{c}{Penalty off} & \\
+$\beta$ & Edge & Variance & Edge & Variance & Exclusive holding & Share of draws \\
+\colrule
+0    & $+0.0915$ & 0.6239 & $+0.0915$ & 0.6239 & ---                       & $0\%$ \\
+0.05 & $+0.0915$ & 0.6032 & $+0.0915$ & 0.6032 & ---                       & $6\%$ \\
+0.1  & $+0.0915$ & 0.6032 & $+0.0915$ & 0.6032 & ---                       & $60\%$ \\
+0.15 & $+0.0731$ & 0.4604 & $+0.0434$ & 0.2491 & Michigan Senate, D and R  & $96\%$ \\
+0.2  & $+0.0051$ & 0.0586 & $+0.0018$ & 0.0196 & Michigan Senate, D and R  & $99\%$ \\
+0.25 & $+0.0051$ & 0.0586 & $+0.0018$ & 0.0196 & Michigan Senate, D and R  & $100\%$ \\
+\textbf{0.5} & $+0.0051$ & 0.0586 & $+0.0018$ & \textbf{0.0196} & Michigan Senate, D and R & $100\%$ \\
+1    & $+0.0051$ & 0.0586 & $+0.0018$ & 0.0196 & Michigan Senate, D and R  & $100\%$ \\
+2    & $+0.0033$ & 0.0571 & $-0.0200$ & 0.0011 & Fed September, all three  & $100\%$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\subsection{Validating the Hamiltonian Mapping}
+\label{sec:benchmark}
+
+Because $K=3$, the feasible set contains $\binom{167}{3} = 762{,}355$
+portfolios, which can be enumerated exhaustively in about five seconds.  This
+supplies a provably optimal reference, and we use it to check how independent
+solution methods applied to the same Hamiltonian compare with its ground state
+(Table~\ref{tab:benchmark}).  Energies are reported with the constant
+$\gamma K^2$ restored, so that they equal the objective of
+Eq.~\eqref{eq:objective}; for a feasible portfolio this is
+$-(\text{edge}) + \beta\,(\text{variance})$.
+
+Exhaustive enumeration and the mixed-integer program with hard
+constraints both return energy $+0.024132$ on the same three contracts.
+Simulated annealing returns a feasible portfolio at $+0.026021$, and the
+linearized QUBO handed to a branch-and-cut solver reaches $+0.028765$ before
+exhausting a 300\,s budget.  The exact agreement of two methods with no
+algorithmic structure in common is evidence that the QUBO of
+Eq.~\eqref{eq:objective} encodes the intended problem; the gaps of the other
+two are properties of those solvers, not of the mapping.
+
+The optimal energy is positive: at $\beta = 0.5$ even the best valid
+three-contract portfolio has a negative risk-adjusted value, its edge of
+$0.0051$ falling short of $\beta$ times its variance of $0.0586$.  An
+unconstrained investor would hold nothing.  The budget term encodes a mandate
+to hold exactly $K$ positions, and the optimum is the least costly way to
+satisfy it; this is the regime in which the synthetic cash positions of
+Sec.~\ref{sec:ablation} are most tempting.
+
+Two observations qualify any performance reading of this table.  First,
+simulated annealing does \emph{not} recover the optimum at this scale:
+it is slower than exhaustive enumeration, and its gap of $0.0019$ is about
+$8\%$ of the optimal objective.  It does, however, respect every
+constraint---budget and exclusivity---in every run.  A plausible contributor
+is the scale of the penalty terms: $\gamma$ and $\lambda$ exceed the objective
+differences between good feasible portfolios by roughly three orders of
+magnitude, so a temperature schedule set by the largest couplings resolves
+feasibility well but ranks feasible portfolios poorly.  Second, continuous
+relaxation followed by rounding fails
+outright, returning an empty portfolio that satisfies neither the budget
+constraint nor any notion of optimality.  The natively binary structure of
+prediction contracts is not amenable to relaxation, which is precisely the
+argument for a formulation in which the binary variables are the instruments
+themselves.
+
+\begin{table}[b]
+\caption{\label{tab:benchmark}Solver comparison on $167$ live Kalshi contracts
+with $K=3$.  Energy is the objective of Eq.~\eqref{eq:objective}, including
+the constant $\gamma K^2$; lower is better.  Gap is $E - E^\ast$ against
+exhaustive enumeration over the $762{,}355$ feasible portfolios.  Both
+mixed-integer encodings require $13{,}861$ auxiliary binary variables; the
+linearized QUBO did not converge within its time limit.  The relaxation selects
+no contracts, so its energy is the budget penalty $\gamma K^2 = 18$.}
+\begin{ruledtabular}
+\begin{tabular}{lccccr}
+Solver & Energy & Gap & Budget & Viol. & Time (s) \\
+\colrule
+Exhaustive $\binom{n}{K}$ & $+0.024132$ & ---        & $\checkmark$ & 0 & 5.01 \\
+PuLP+CBC (native)         & $+0.024132$ & $0$        & $\checkmark$ & 0 & 217.82 \\
+SA (Ising, 5000 reads)    & $+0.026021$ & $0.0019$   & $\checkmark$ & 0 & 35.67 \\
+PuLP+CBC (QUBO)           & $+0.028765$ & $0.0046$   & $\checkmark$ & 0 & 301.37 \\
+SciPy relax+round         & $+18.0$     & ---        & $\times$     & 0 & 5.36 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\subsection{Simulated Annealing Across Seeds}
+\label{sec:robustness}
+
+Across twenty independent annealing runs with distinct random seeds, every run
+satisfied the budget constraint and none held an exclusive pair.  The runs
+returned nineteen \emph{distinct} portfolios---mean energy $+0.0259$, standard
+deviation $0.0006$, best $+0.0245$---and none reached the exact optimum of
+$+0.0241$; every run finished between $0.0004$ and $0.0031$ above it.  At this
+scale, simulated annealing with $5000$ reads reliably finds feasible portfolios
+close to the optimum, but not the optimum itself.
+
+\section{Conclusion}
+
+We have presented a portfolio optimization framework in which the mapping to an
+Ising Hamiltonian is exact rather than approximate.  Equity formulations must
+discretize a continuous weight vector, spending several spins per asset on a
+granularity parameter that is an artifact of the encoding; prediction market
+contracts are already binary, so the number of spins equals the number of
+tradable instruments and the decision space is represented without loss.
+
+The framework's distinctive constraint is exclusivity.  Holding several
+outcomes of one event is a bet on their union, and when those outcomes cover
+the event the position is synthetic cash.  We showed that once risk enters the
+objective, an optimizer without the constraint fills its positions with such
+combinations---in every one of $100$ forecast draws for $\beta \ge 0.25$---often
+accepting lower and, at high risk aversion, negative edge to do so.  In our live
+universe it bought both candidates in the Michigan Senate race and, at
+$\beta = 2$, all three outcomes of the Federal Reserve's September decision.
+The exclusivity penalty removes every such holding.  We also found that a
+forecast generated without regard to event logic manufactures edge on exactly
+these combinations; projecting it onto the event structure removes the
+artifact but not the behaviour.  Since equity assets are never mutually
+exclusive, no formulation in the Markowitz lineage has needed such a
+constraint; it is specific to event-contingent claims.
+
+We also replaced the hand-set correlation matrix usual in this setting with an
+estimate derived from the martingale property of prediction market prices,
+Eq.~\eqref{eq:covariation}, and measured from price history.  On ninety
+days of data the sampling error is comparable to the dispersion of the estimates
+themselves, and the heuristic shrinkage weight is $\delta = 0.771$:
+the structural prior does most of the work, and we report this rather than
+overstate what the price history supports.
+
+Exhaustive enumeration and a mixed-integer program with hard constraints,
+methods with no algorithmic structure in common, recover the same ground state
+of the resulting Hamiltonian, which validates the mapping.  We caution against
+reading Table~\ref{tab:benchmark} as a performance claim: at $n=167$ with $K=3$,
+exhaustive enumeration is the fastest method, and simulated annealing, while
+respecting every constraint, did not recover the exact optimum in any of twenty
+independent runs.  Rescaling the penalty terms relative to the objective is a
+natural first remedy.  The case for the Ising formulation rests not
+on solver speed at this scale but on the exactness of the encoding and on the
+growth of the feasible set (Table~\ref{tab:scaling}), which removes exhaustive
+search as an option once the number of held positions scales with the size of
+the investable universe.  Establishing where that crossover occurs empirically,
+and executing the same Hamiltonian on quantum annealing hardware, are the
+natural next steps.
+
+\section*{Acknowledgments}
+The authors fondly dedicate the PMPHET acronym to their cats: Puma, Poppy, Hershey, Elliot, and Tiger, whose quiet support was foundational to the completion of this work.
+
+\begin{thebibliography}{30}
+
+\bibitem{markowitz1952}
+H.~Markowitz, \emph{J.\ Finance} \textbf{7}, 77 (1952).
+
+\bibitem{sharpe1964}
+W.~F.~Sharpe, \emph{J.\ Finance} \textbf{19}, 425 (1964).
+
+\bibitem{merton1972}
+R.~C.~Merton, \emph{J.\ Financial Quant.\ Anal.} \textbf{7}, 1851 (1972).
+
+\bibitem{kadowaki1998}
+T.~Kadowaki and H.~Nishimori, \emph{Phys.\ Rev.\ E} \textbf{58}, 5355 (1998).
+
+\bibitem{johnson2011}
+M.~W.~Johnson \emph{et al.}, \emph{Nature} \textbf{473}, 194 (2011).
+
+\bibitem{farhi2014}
+E.~Farhi, J.~Goldstone, and S.~Gutmann, \emph{A Quantum Approximate
+Optimization Algorithm}, arXiv:1411.4028 (2014).
+
+\bibitem{bienstock1996}
+D.~Bienstock, \emph{Math.\ Program.} \textbf{74}, 121 (1996).
+
+\bibitem{bertsimas2009}
+D.~Bertsimas and R.~Shioda, \emph{Comput.\ Optim.\ Appl.} \textbf{43}, 1 (2009).
+
+\bibitem{lucas2014}
+A.~Lucas, \emph{Front.\ Phys.} \textbf{2}, 5 (2014).
+
+\bibitem{glover2019}
+F.~Glover, G.~Kochenberger, and Y.~Du, \emph{4OR} \textbf{17}, 335 (2019).
+
+
+\bibitem{rosenberg2016}
+G.~Rosenberg \emph{et al.}, \emph{IEEE J.\ Sel.\ Top.\ Signal Process.}
+\textbf{10}, 1053 (2016).
+
+\bibitem{mugel2022}
+S.~Mugel \emph{et al.}, \emph{Phys.\ Rev.\ Research} \textbf{4}, 013006 (2022).
+
+\bibitem{orus2019}
+R.~Or\'{u}s, S.~Mugel, and E.~Lizaso, \emph{Rev.\ Phys.} \textbf{4}, 100028
+(2019).
+
+\bibitem{herman2023}
+D.~Herman \emph{et al.}, \emph{Nat.\ Rev.\ Phys.} \textbf{5}, 450 (2023).
+
+\bibitem{lee2024}
+Lee \textit{et al.}, \emph{Quantum-Inspired Portfolio Optimization In The QUBO
+Framework}, arXiv:2410.05932 (2024).
+
+\bibitem{verma2022}
+A.~Verma and M.~Lewis, \emph{Discrete Optim.} \textbf{44}, 100594 (2022).
+
+\bibitem{wolfers2004}
+J.~Wolfers and E.~Zitzewitz, \emph{J.\ Econ.\ Perspect.} \textbf{18}, 107
+(2004).
+
+\bibitem{arrow2008}
+K.~J.~Arrow \emph{et al.}, \emph{Science} \textbf{320}, 877 (2008).
+
+\bibitem{kelly1956}
+J.~L.~Kelly~Jr., \emph{Bell Syst.\ Tech.\ J.} \textbf{35}, 917 (1956).
+
+\bibitem{thorp2006}
+E.~O.~Thorp, in \emph{Handbook of Asset and Liability Management},
+Vol.~1 (Elsevier, Amsterdam, 2006), p.~385.
+
+\bibitem{hanson2003}
+R.~Hanson, \emph{Inf.\ Syst.\ Front.} \textbf{5}, 107 (2003).
+
+\bibitem{chen2007}
+Y.~Chen and D.~M.~Pennock, in \emph{Proceedings of the 23rd Conference on
+Uncertainty in Artificial Intelligence (UAI)} (2007), p.~49.
+
+\bibitem{kalshi}
+Kalshi Exchange, \url{https://kalshi.com} (2026).
+
+
+\bibitem{kirkpatrick1983}
+S.~Kirkpatrick, C.~D.~Gelatt, and M.~P.~Vecchi, \emph{Science} \textbf{220},
+671 (1983).
+
+\end{thebibliography}
+\end{document}

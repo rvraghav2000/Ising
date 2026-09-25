@@ -1,0 +1,21 @@
+
+=== EMPIRICAL COVARIANCE FROM PRICE HISTORY ===
+
+  usable: 167 contracts, 32 events, T=89 daily increments
+  event factors: 32  -> 496 event-pair correlations estimated
+  shrinkage toward structural prior: delta=0.771 (77% prior / 23% data)
+    raw    sd=0.121 range [-0.413,+0.407]
+    shrunk sd=0.067 range [-0.091,+0.247]
+  within-event blocks: 32 analytic, 0 empirical
+  min eigenvalue: -0.048503 -> -0.000000
+
+  wrote covariance_empirical.csv  (167x167)
+  wrote event_correlation.csv and *_shrunk.csv  (32 events)
+  covariance built from the SHRUNK event correlations (delta=0.771)
+  wrote contracts_used.csv (with factor loadings)
+
+  estimated event-pair correlations: n=496
+    mean=+0.009  sd=0.121  min=-0.413  max=+0.407
+    |rho| > 0.3 : 10
+    |rho| > 0.5 : 0
+

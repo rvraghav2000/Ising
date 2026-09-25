@@ -1,0 +1,64 @@
+% ---- replaces tab:contracts (12-row contract listing) ----
+
+\begin{table}[b]
+\caption{\label{tab:contracts}Composition of the 167-contract Kalshi universe (32 events).  Contracts are drawn whole-event-at-a-time so that event structure is preserved; the structure class fixes the within-event covariance analytically, leaving only cross-event terms to be estimated.}
+\begin{ruledtabular}
+\begin{tabular}{lccc}
+Structure & Events & Contracts & Within-event covariance \\
+\colrule
+Disjoint & 25 & 137 & $-p_i p_j$ \\
+Nested & 1 & 8 & $\min(p_i,p_j)-p_i p_j$ \\
+Unstructured & 6 & 22 & estimated \\
+\colrule
+Total & 32 & 167 & \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+% ---- new: category breakdown ----
+
+\begin{table}[b]
+\caption{\label{tab:categories}Category composition of the 167-contract universe.  Prices are live Kalshi mid-quotes.}
+\begin{ruledtabular}
+\begin{tabular}{lccc}
+Category & Events & Contracts & Price range \\
+\colrule
+Sports & 11 & 89 & 0.02--0.87 \\
+Elections & 9 & 23 & 0.02--0.96 \\
+Financials & 2 & 19 & 0.02--0.29 \\
+Entertainment & 1 & 10 & 0.02--0.49 \\
+Crypto & 2 & 8 & 0.02--0.24 \\
+Science and Technology & 2 & 7 & 0.02--0.22 \\
+Economics & 2 & 5 & 0.02--0.91 \\
+Politics & 2 & 4 & 0.04--0.19 \\
+Companies & 1 & 2 & 0.04--0.81 \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+% ---- replaces tab:correlations (hardcoded rho table) ----
+
+\begin{table}[b]
+\caption{\label{tab:correlations}Cross-event correlations estimated from 89 daily price increments, replacing a hand-set correlation table.  Each event contributes one factor (first principal component of its contracts' increments), giving $\binom{32}{2}=496$ estimated correlations in place of $\binom{167}{2}=13,861$ free contract pairs.  The sampling standard error is $1/\sqrt{T-3}=0.108$, so individual estimates are weak; the strongest are shown.}
+\begin{ruledtabular}
+\begin{tabular}{lcr}
+\multicolumn{3}{c}{\textit{Distribution of the 496 estimates}} \\
+\colrule
+mean & & $+0.009$ \\
+standard deviation & & $0.121$ \\
+range & & $-0.413$ to $+0.407$ \\
+$|\rho|>2\,\mathrm{s.e.}$ & & 30 of 496 \\
+\colrule
+\multicolumn{3}{c}{\textit{Strongest estimated pairs}} \\
+\colrule
+Event pair & Categories & $\hat\rho$ \\
+\colrule
+CONTROLS-2026 -- KXBALANCEPOWERCOMBO-27 & Elections/Elections & $-0.413$ \\
+KXFEDDECISION-26SEP -- KXRATECUTCOUNT-26DEC31 & Economics/Economics & $+0.407$ \\
+KXALIENS-27 -- KXBALLONDOR-26 & Science and/Sports & $-0.396$ \\
+KXFEDDECISION-26SEP -- KXOSCARPIC-27 & Economics/Entertainme & $-0.396$ \\
+KXBALANCEPOWERCOMBO-27 -- KXVENEZUELALEADER-26DE & Elections/Elections & $+0.346$ \\
+CONTROLS-2026 -- KXBALLONDOR-26 & Elections/Sports & $-0.338$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
